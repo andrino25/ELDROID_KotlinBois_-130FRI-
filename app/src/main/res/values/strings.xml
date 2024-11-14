@@ -48,4 +48,5 @@
     <!-- Feedback Section -->
     <string name="feedback_hint">Write feedback…</string>
     <string name="send_feedback">Send Feedback</string>
+    <string name="spiderDetails">Spider Details</string>
 </resources>
