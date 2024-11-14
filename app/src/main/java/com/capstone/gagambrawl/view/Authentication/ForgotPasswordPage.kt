@@ -9,7 +9,6 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import com.capstone.gagambrawl.R
-
 class ForgotPasswordPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

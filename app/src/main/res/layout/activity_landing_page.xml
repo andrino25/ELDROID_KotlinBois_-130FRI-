@@ -17,7 +17,8 @@
         android:layout_marginHorizontal="30dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
-        android:textSize="12sp"
+        android:textSize="14sp"
+        android:fontFamily="@font/medium"
         android:text="@string/get_started_text"/>
 
 </RelativeLayout>

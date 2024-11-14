@@ -7,16 +7,14 @@
 
     <RelativeLayout
         android:layout_width="170dp"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
         android:background="@drawable/spider_button_bg">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/spider_image"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
             app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
             android:layout_marginBottom="10dp"
             android:scaleType="fitXY"
@@ -27,23 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_image"
+            android:fontFamily="@font/medium"
             android:text="Goliath BirdEater"
             android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_marginStart="10dp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/spider_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_breed"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/standard"
             android:text="One of the largest spider species in the world, known for its impressive size and"
             android:textColor="@color/white"
-            android:textSize="10sp" />
+            android:textSize="11sp" />
 
 
     </RelativeLayout>
