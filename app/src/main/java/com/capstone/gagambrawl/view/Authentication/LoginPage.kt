@@ -10,7 +10,6 @@ import android.widget.Button
 import android.widget.TextView
 import com.capstone.gagambrawl.view.Dashboard.DashboardPage
 import com.capstone.gagambrawl.R
-
 class LoginPage : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

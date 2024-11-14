@@ -26,19 +26,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sample Spider"
-            android:layout_toRightOf="@id/inventory_image"
-            android:layout_marginTop="10dp"/>
-
+            android:fontFamily="@font/medium"
+            android:textSize="16sp"
+            android:layout_toEndOf="@id/inventory_image"
+            android:layout_marginTop="18dp"/>
 
         <TextView
             android:id="@+id/inventory_spider_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Active"
+            android:textSize="14sp"
+            android:layout_marginTop="-4dp"
             android:layout_below="@id/inventory_spider_name"
             android:textColor="@color/green"
-            android:layout_toRightOf="@id/inventory_image"
-            android:layout_marginTop="5dp"/>
+            android:fontFamily="@font/standard"
+            android:layout_toRightOf="@id/inventory_image"/>
 
         <ImageView
             android:id="@+id/inventory_dots"

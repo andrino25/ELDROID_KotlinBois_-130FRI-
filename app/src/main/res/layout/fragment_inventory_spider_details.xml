@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/spiderDetails"
                     android:fontFamily="@font/medium"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
                     android:textColor="@color/white"
                     android:background="@color/maroon"
                     android:gravity="center" />
@@ -79,7 +79,7 @@
                     android:fontFamily="@font/bold"
                     android:text="Lunhaw"
                     android:textColor="@android:color/black"
-                    android:textSize="40sp" />
+                    android:textSize="35sp" />
 
                 <ImageView
                     android:id="@+id/favoriteIcon"
@@ -97,9 +97,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderName"
                     android:layout_marginStart="16dp"
+                    android:fontFamily="@font/standard"
                     android:text="Size: Super Jumbo"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp" />
+                    android:textSize="15sp"
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/spiderStatus"
@@ -107,10 +108,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderSize"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
                     android:text="Status: Active"
                     android:textColor="@color/green"
-                    android:textSize="18sp" />
+                    android:fontFamily="@font/standard"
+                    android:textSize="15sp" />
 
                 <!-- Description -->
                 <TextView
@@ -120,7 +121,7 @@
                     android:layout_below="@id/spiderStatus"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:fontFamily="@font/bold"
+                    android:fontFamily="@font/medium"
                     android:text="Description:"
                     android:textColor="@android:color/black"
                     android:textSize="16sp" />
@@ -131,9 +132,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderDescriptionLabel"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
                     android:fontFamily="@font/standard"
+                    android:justificationMode="inter_word"
                     android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non diam sit amet odio viverra aliquet."
                     android:textColor="@android:color/black"
                     android:textSize="14sp" />
@@ -158,6 +159,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="@color/maroon"
                     android:text="Edit Details"
+                    android:fontFamily="@font/medium"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white" />
 
@@ -165,6 +167,7 @@
                     android:id="@+id/deleteDetailsButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/medium"
                     android:layout_weight="1"
                     android:backgroundTint="@color/green"
                     android:text="Delete Details"

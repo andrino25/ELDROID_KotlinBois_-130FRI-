@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -60,7 +61,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/medium"
                     android:text="@string/faq_add_spider"
                     android:textColor="@color/black"
@@ -69,7 +70,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/standard"
+                    android:textSize="13sp"
+                    android:justificationMode="inter_word"
                     android:text="@string/faq_add_spider_answer" />
 
 
@@ -85,7 +88,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/standard"
+                    android:textSize="13sp"
+                    android:justificationMode="inter_word"
                     android:text="@string/faq_edit_spider_answer" />
 
                 <TextView
@@ -100,7 +105,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/standard"
+                    android:textSize="13sp"
+                    android:justificationMode="inter_word"
                     android:text="@string/faq_search_spider_answer" />
 
                 <TextView
@@ -115,7 +122,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/standard"
+                    android:textSize="13sp"
+                    android:justificationMode="inter_word"
                     android:text="@string/faq_delete_spider_answer" />
                 <!-- More FAQ items... -->
 
@@ -123,7 +132,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="16dp"
                     android:fontFamily="@font/medium"
                     android:text="Feedback"
                     android:textColor="@color/maroon"
@@ -131,8 +140,7 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp">
+                    android:layout_height="wrap_content">
 
                     <!-- EditText for Feedback Input -->
                     <EditText
@@ -145,7 +153,10 @@
                         android:layout_toStartOf="@id/sendFeedbackButton"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentEnd="true"
-                        android:paddingEnd="48dp" /> <!-- Extra padding to leave space for the button -->
+                        android:fontFamily="@font/standard"
+                        android:textSize="14sp"
+                        android:paddingEnd="48dp"
+                        tools:ignore="RtlSymmetry" /> <!-- Extra padding to leave space for the button -->
 
                     <!-- Send Button inside the EditText on the right side -->
                     <ImageButton

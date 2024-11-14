@@ -30,8 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/c_header"
             android:layout_marginTop="20dp"
-            android:queryHint="Search for spider..."
-            />
+            android:queryHint="Search for spider..." />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/catalog_recycler_view"
