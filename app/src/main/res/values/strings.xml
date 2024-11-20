@@ -49,4 +49,20 @@
     <string name="feedback_hint">Write feedback…</string>
     <string name="send_feedback">Send Feedback</string>
     <string name="spiderDetails">Spider Details</string>
+    <string name="quantity">Quantity</string>
+    <string name="lunhaw">Lunhaw</string>
+    <string name="favorite_icon">Favorite Icon</string>
+    <string name="size_super_jumbo">Size: Super Jumbo</string>
+    <string name="status_active">Status: Active</string>
+    <string name="description">Description:</string>
+    <string name="lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_morbi_non_diam_sit_amet_odio_viverra_aliquet">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non diam sit amet odio viverra aliquet.</string>
+    <string name="edit_details">Edit Details</string>
+    <string name="delete_details">Delete Details</string>
+    <string name="john_doe">John Doe</string>
+    <string name="johndoe_gmail_com">johndoe@gmail.com</string>
+    <string name="my_profile">My Profile</string>
+    <string name="goliath_birdeater">Goliath BirdEater</string>
+    <string name="one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and">One of the largest spider species in the world, known for its impressive size and</string>
+    <string name="active">Active</string>
+    <string name="add_image">Add Image</string>
 </resources>

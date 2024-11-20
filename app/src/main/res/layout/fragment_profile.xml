@@ -16,12 +16,12 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:text="@string/profile"
-            android:paddingTop="16dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"
+            android:paddingTop="@dimen/_16dp"
+            android:paddingBottom="@dimen/_10dp"
+            android:paddingRight="@dimen/_16dp"
+            android:paddingLeft="@dimen/_16dp"
             android:fontFamily="@font/medium"
-            android:textSize="24sp"
+            android:textSize="@dimen/_24sp"
             android:textColor="@color/white"
             android:background="@color/maroon"/>
 
@@ -30,14 +30,14 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_below="@+id/profileHeader"
-            android:paddingTop="30dp"
-            android:paddingRight="30dp"
-            android:paddingLeft="30dp"
-            android:paddingBottom="16dp">
+            android:paddingTop="@dimen/_30dp"
+            android:paddingRight="@dimen/_30dp"
+            android:paddingLeft="@dimen/_30dp"
+            android:paddingBottom="@dimen/_16dp">
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_height="100dp"
-                android:layout_width="100dp"
+                android:layout_height="@dimen/_100dp"
+                android:layout_width="@dimen/_100dp"
                 android:src="@drawable/img_pfp"
                 android:layout_centerHorizontal="true"/>
             <TextView
@@ -45,20 +45,20 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/profileImage"
-                android:text="John Doe"
+                android:text="@string/john_doe"
                 android:fontFamily="@font/medium"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textSize="@dimen/_20sp"
                 android:layout_centerHorizontal="true"/>
             <TextView
                 android:id="@+id/profileEmail"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/profileName"
-                android:text="johndoe@gmail.com"
+                android:text="@string/johndoe_gmail_com"
                 android:fontFamily="@font/standard"
                 android:textColor="@color/black"
-                android:textSize="16sp"
+                android:textSize="@dimen/_16sp"
                 android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 
@@ -67,17 +67,17 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_below="@+id/profileContainer"
-            android:padding="12dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
+            android:padding="@dimen/_12dp"
+            android:layout_marginRight="@dimen/_20dp"
+            android:layout_marginLeft="@dimen/_20dp"
             android:backgroundTint="#d9d9d9"
             android:background="@drawable/bg_profile_button"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginTop="@dimen/_4dp"
+            android:layout_marginBottom="@dimen/_4dp">
             <ImageView
                 android:id="@+id/editProfileIcon"
-                android:layout_height="25dp"
-                android:layout_width="25dp"
+                android:layout_height="@dimen/_25dp"
+                android:layout_width="@dimen/_25dp"
                 android:src="@drawable/ic_edit_profile"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"/>
@@ -85,11 +85,11 @@
                 android:id="@+id/editProfileLabel"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="My Profile"
+                android:text="@string/my_profile"
                 android:fontFamily="@font/standard"
                 android:layout_toEndOf="@+id/editProfileIcon"
                 android:textColor="@color/black"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/_16dp"
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
         <RelativeLayout
@@ -97,17 +97,17 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_below="@+id/editProfileButton"
-            android:padding="12dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:backgroundTint="#d9d9d9"
+            android:padding="@dimen/_12dp"
+            android:layout_marginRight="@dimen/_20dp"
+            android:layout_marginLeft="@dimen/_20dp"
+            android:backgroundTint="@color/offWhite"
             android:background="@drawable/bg_profile_button"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginTop="@dimen/_4dp"
+            android:layout_marginBottom="@dimen/_4dp">
             <ImageView
                 android:id="@+id/helpCenterIcon"
-                android:layout_height="25dp"
-                android:layout_width="25dp"
+                android:layout_height="@dimen/_25dp"
+                android:layout_width="@dimen/_25dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/ic_help_center"
                 android:layout_centerVertical="true"/>
@@ -115,9 +115,9 @@
                 android:id="@+id/helpCenterLabel"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Help Center"
+                android:text="@string/help_center"
                 android:fontFamily="@font/standard"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/_16dp"
                 android:layout_toEndOf="@+id/helpCenterIcon"
                 android:textColor="@color/black"
                 android:layout_centerVertical="true"/>
@@ -126,17 +126,17 @@
             android:id="@+id/logoutButton"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:padding="12dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="4dp"
+            android:padding="@dimen/_12dp"
+            android:layout_marginRight="@dimen/_20dp"
+            android:layout_marginLeft="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_4dp"
             android:backgroundTint="@color/maroon"
             android:background="@drawable/bg_profile_button"
             android:layout_alignParentBottom="true">
             <ImageView
                 android:id="@+id/logoutIcon"
-                android:layout_height="25dp"
-                android:layout_width="25dp"
+                android:layout_height="@dimen/_25dp"
+                android:layout_width="@dimen/_25dp"
                 android:layout_alignParentStart="true"
                 android:src="@drawable/ic_logout"
                 android:layout_centerVertical="true"/>
@@ -144,9 +144,9 @@
                 android:id="@+id/logoutLabel"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="Logout"
+                android:text="@string/logout"
                 android:fontFamily="@font/standard"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/_16dp"
                 android:layout_toEndOf="@+id/logoutIcon"
                 android:textColor="@color/white"
                 android:layout_centerVertical="true"/>

@@ -14,15 +14,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/maroon"
-            android:paddingTop="16dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp">
+            android:paddingTop="@dimen/_16dp"
+            android:paddingBottom="@dimen/_10dp"
+            android:paddingRight="@dimen/_16dp"
+            android:paddingLeft="@dimen/_16dp">
 
             <ImageButton
                 android:id="@+id/backButton"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="@dimen/_22dp"
+                android:layout_height="@dimen/_22dp"
                 android:layout_centerVertical="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_back"/>
@@ -32,9 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/medium"
-                android:text="Help Center"
+                android:text="@string/help_center"
                 android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:textSize="@dimen/_24sp" />
         </RelativeLayout>
 
         <!-- Content -->
@@ -47,31 +47,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/_16dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/medium"
-                    android:text="FAQs"
+                    android:text="@string/faqs"
                     android:textColor="@color/maroon"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/_24sp" />
 
                 <!-- FAQ Items -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/_8dp"
                     android:fontFamily="@font/medium"
                     android:text="@string/faq_add_spider"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/_16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/standard"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/_13sp"
                     android:justificationMode="inter_word"
                     android:text="@string/faq_add_spider_answer" />
 
@@ -79,98 +79,54 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/_16dp"
                     android:fontFamily="@font/medium"
                     android:text="@string/faq_edit_spider"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/_16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/standard"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/_13sp"
                     android:justificationMode="inter_word"
                     android:text="@string/faq_edit_spider_answer" />
 
                 <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/_16dp"
                 android:fontFamily="@font/medium"
                 android:text="@string/faq_search_spider"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="@dimen/_16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/standard"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/_13sp"
                     android:justificationMode="inter_word"
                     android:text="@string/faq_search_spider_answer" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/_16dp"
                     android:fontFamily="@font/medium"
                     android:text="@string/faq_delete_spider"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/_16sp" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/standard"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/_13sp"
                     android:justificationMode="inter_word"
                     android:text="@string/faq_delete_spider_answer" />
                 <!-- More FAQ items... -->
-
-                <!-- Feedback Section -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:fontFamily="@font/medium"
-                    android:text="Feedback"
-                    android:textColor="@color/maroon"
-                    android:textSize="24sp" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <!-- EditText for Feedback Input -->
-                    <EditText
-                        android:id="@+id/feedbackInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_edit_text"
-                        android:hint="Write feedback..."
-                        android:padding="12dp"
-                        android:layout_toStartOf="@id/sendFeedbackButton"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentEnd="true"
-                        android:fontFamily="@font/standard"
-                        android:textSize="14sp"
-                        android:paddingEnd="48dp"
-                        tools:ignore="RtlSymmetry" /> <!-- Extra padding to leave space for the button -->
-
-                    <!-- Send Button inside the EditText on the right side -->
-                    <ImageButton
-                        android:id="@+id/sendFeedbackButton"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_send"
-                        android:backgroundTint="@color/maroon"
-                        android:contentDescription="Send Feedback" />
-
-                </RelativeLayout>
             </LinearLayout>
         </ScrollView>
     </RelativeLayout>

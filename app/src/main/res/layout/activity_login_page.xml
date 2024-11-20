@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/app_name"
-        android:layout_width="300dp"
+        android:layout_width="@dimen/_300dp"
         android:layout_height="50dp"
         android:layout_above="@+id/lp_et_email"
         android:src="@drawable/spider_title"
@@ -21,14 +21,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/email_txt"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/_20dp"
         android:fontFamily="@font/standard"
-        android:padding="15dp"
-        android:layout_marginHorizontal="30dp"
+        android:padding="@dimen/_15dp"
+        android:layout_marginHorizontal="@dimen/_30dp"
         android:textColor="@color/black"
         android:inputType="text"
         android:singleLine="true"
-        android:textSize="14sp"
+        android:textSize="@dimen/_14sp"
         android:layout_above="@+id/lp_et_password"
         android:background="@drawable/spider_white_container_box"
         tools:ignore="RtlHardcoded" />
@@ -39,11 +39,11 @@
         android:layout_height="wrap_content"
         android:hint="@string/password"
         android:textColor="@color/black"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/_12dp"
         android:fontFamily="@font/standard"
-        android:padding="15dp"
+        android:padding="@dimen/_15dp"
         android:layout_marginHorizontal="30dp"
-        android:textSize="14sp"
+        android:textSize="@dimen/_14sp"
         android:inputType="textPassword"
         android:layout_above="@+id/lp_et_forgotPassword"
         android:singleLine="true"
@@ -59,9 +59,9 @@
         android:textStyle="bold"
         android:layout_above="@+id/lp_et_loginBtn"
         android:fontFamily="@font/standard"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/_8dp"
         android:layout_alignEnd="@id/lp_et_password"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/_14sp"/>
 
     <Button
         android:id="@+id/lp_et_loginBtn"
@@ -69,9 +69,9 @@
         android:layout_height="wrap_content"
         style="@style/RedButtonStyle"
         android:background="@drawable/spider_button_bg"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="16dp"
-        android:textSize="12sp"
+        android:layout_marginHorizontal="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_16dp"
+        android:textSize="@dimen/_12sp"
         android:layout_above="@+id/lp_et_toRegister"
         android:fontFamily="@font/medium"
         android:text="@string/login"/>
@@ -84,10 +84,10 @@
         android:textColor="@color/maroon"
         android:layout_alignParentBottom="true"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="@dimen/_16dp"
+        android:layout_marginTop="@dimen/_12dp"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/standard"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/_14sp"/>
 
 </RelativeLayout>

@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/app_name"
-        android:layout_width="300dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/_300dp"
+        android:layout_height="@dimen/_50dp"
         android:layout_above="@+id/rp_et_email"
         android:src="@drawable/spider_title"
         android:layout_centerHorizontal="true"
@@ -24,11 +24,11 @@
         android:inputType="text"
         android:fontFamily="@font/standard"
         android:singleLine="true"
-        android:layout_marginTop="20dp"
-        android:padding="15dp"
+        android:layout_marginTop="@dimen/_20dp"
+        android:padding="@dimen/_15dp"
         android:textColor="@color/black"
-        android:layout_marginHorizontal="30dp"
-        android:textSize="14sp"
+        android:layout_marginHorizontal="@dimen/_30dp"
+        android:textSize="@dimen/_14sp"
         android:layout_above="@+id/rp_et_password"
         android:background="@drawable/spider_white_container_box"
         tools:ignore="RtlHardcoded,TextFields" />
@@ -39,14 +39,14 @@
         android:layout_height="wrap_content"
         android:hint="@string/password"
         android:layout_above="@+id/rp_et_confirm_password"
-        android:layout_marginTop="12dp"
-        android:padding="15dp"
+        android:layout_marginTop="@dimen/_12dp"
+        android:padding="@dimen/_15dp"
         android:fontFamily="@font/standard"
         android:inputType="textPassword"
         android:singleLine="true"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginHorizontal="@dimen/_30dp"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/_14sp"
         android:background="@drawable/spider_white_container_box"
         tools:ignore="RtlHardcoded" />
 
@@ -58,11 +58,11 @@
         android:inputType="textPassword"
         android:singleLine="true"
         android:fontFamily="@font/standard"
-        android:layout_marginTop="12dp"
-        android:padding="15dp"
-        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="@dimen/_12dp"
+        android:padding="@dimen/_15dp"
+        android:layout_marginHorizontal="@dimen/_30dp"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/_14sp"
         android:layout_above="@+id/rp_et_regBtn"
         android:background="@drawable/spider_white_container_box"
         tools:ignore="RtlHardcoded" />
@@ -73,10 +73,10 @@
         android:layout_height="wrap_content"
         style="@style/RedButtonStyle"
         android:background="@drawable/spider_button_bg"
-        android:layout_marginHorizontal="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="@dimen/_30dp"
+        android:layout_marginTop="@dimen/_20dp"
         android:fontFamily="@font/medium"
-        android:textSize="12sp"
+        android:textSize="@dimen/_12sp"
         android:layout_above="@+id/rp_et_toLogin"
         android:text="@string/register"/>
 
@@ -88,11 +88,9 @@
         android:text="@string/already_have_and_account_sign_in"
         android:textColor="@color/maroon"
         android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginTop="@dimen/_16dp"
+        android:layout_marginBottom="@dimen/_16dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:textSize="14sp"/>
-
-
+        android:textSize="@dimen/_14sp"/>
 </RelativeLayout>

@@ -8,16 +8,16 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:layout_marginHorizontal="30dp"
+        android:padding="@dimen/_16dp"
+        android:layout_marginHorizontal="@dimen/_30dp"
         android:background="@drawable/spider_button_bg">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/spider_image"
             android:layout_width="match_parent"
-            android:layout_height="130dp"
+            android:layout_height="@dimen/_130dp"
             app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="fitXY"
             android:src="@drawable/spider_sample_img" />
 
@@ -26,9 +26,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_image"
-            android:text="Goliath BirdEater"
+            android:text="@string/goliath_birdeater"
             android:fontFamily="@font/medium"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16sp"
             android:textColor="@color/white"/>
 
 
@@ -37,11 +37,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_breed"
-            android:text="Sample Text"
+            android:text="@string/sample_text"
             android:textColor="@color/white"
             android:fontFamily="@font/standard"
-            android:textSize="13sp"
-            android:layout_marginTop="8dp"
+            android:textSize="@dimen/_13sp"
+            android:layout_marginTop="@dimen/_8dp"
             />
         <TextView
             android:id="@+id/spider_origin"
@@ -49,9 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_color"
             android:fontFamily="@font/standard"
-            android:text="Sample Text"
+            android:text="@string/sample_text"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="@dimen/_13sp"
             />
         <TextView
             android:id="@+id/spider_size"
@@ -59,9 +59,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_origin"
             android:fontFamily="@font/standard"
-            android:text="Sample Text"
+            android:text="@string/sample_text"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="@dimen/_13sp"
             />
 
         <TextView
@@ -69,9 +69,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/spider_size"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/_8dp"
             android:fontFamily="@font/standard"
-            android:text="One of the largest spider species in the world, known for its impressive size and"
+            android:text="@string/one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and"
             android:textColor="@color/white"/>
 
     </RelativeLayout>

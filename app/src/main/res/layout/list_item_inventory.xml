@@ -6,19 +6,19 @@
     android:layout_margin="10dp">
 
     <RelativeLayout
-        android:layout_width="170dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/_170dp"
+        android:layout_height="@dimen/_150dp"
         android:background="@drawable/spider_gray_container">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/i_spider_image"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_height="@dimen/_70dp"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
             app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="fitXY"
             android:src="@drawable/spider_sample_img" />
 
@@ -28,11 +28,11 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/i_spider_image"
             android:fontFamily="@font/medium"
-            android:text="Goliath BirdEater"
+            android:text="@string/goliath_birdeater"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginStart="10dp"/>
+            android:textSize="@dimen/_14sp"
+            android:layout_marginStart="@dimen/_10dp"/>
 
 
         <TextView
@@ -40,24 +40,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/i_spider_breed"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="@dimen/_10dp"
             android:text="@string/sample_text"
             android:textColor="@color/green"
-            android:textSize="13sp"
-            android:layout_marginTop="-3dp"
+            android:textSize="@dimen/_13sp"
             />
 
         <ImageButton
             android:id="@+id/starBtn"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
             android:src="@drawable/ic_star_on"
-            android:background="#00ffffff"
+            android:background="@color/transparent"
             android:scaleType="fitCenter"
             android:fontFamily="@font/standard"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="15dp"
+            android:layout_margin="@dimen/_15dp"
             android:onClick="onToggleStar"/>
     </RelativeLayout>
 </RelativeLayout>

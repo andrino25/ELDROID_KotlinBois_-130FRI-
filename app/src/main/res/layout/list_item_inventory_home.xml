@@ -12,12 +12,12 @@
 
         <ImageView
             android:id="@+id/inventory_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_width="@dimen/_60dp"
+            android:layout_height="@dimen/_60dp"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="fitXY"
             android:src="@drawable/spider_sample_img" />
 
@@ -25,19 +25,18 @@
             android:id="@+id/inventory_spider_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sample Spider"
+            android:text="@string/sample_text"
             android:fontFamily="@font/medium"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16sp"
             android:layout_toEndOf="@id/inventory_image"
-            android:layout_marginTop="18dp"/>
+            android:layout_marginTop="@dimen/_18dp"/>
 
         <TextView
             android:id="@+id/inventory_spider_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Active"
-            android:textSize="14sp"
-            android:layout_marginTop="-4dp"
+            android:text="@string/active"
+            android:textSize="@dimen/_14sp"
             android:layout_below="@id/inventory_spider_name"
             android:textColor="@color/green"
             android:fontFamily="@font/standard"
@@ -45,11 +44,11 @@
 
         <ImageView
             android:id="@+id/inventory_dots"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
+            android:layout_width="@dimen/_30dp"
+            android:layout_height="@dimen/_20dp"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="@dimen/_10dp"
             android:src="@drawable/ic_three_dots"/>
 
     </RelativeLayout>
