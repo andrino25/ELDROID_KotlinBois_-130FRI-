@@ -1,15 +1,7 @@
-package com.capstone.gagambrawl.viewmodel
-
-import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.app.Activity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.capstone.gagambrawl.model.LoginCredentials
+import com.capstone.gagambrawl.model.RegisterCredentiials
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -18,20 +10,25 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
-import android.app.Activity
+import java.io.IOException
+import android.util.Log
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.WindowInsets
-import android.view.WindowManager
 import android.view.WindowInsetsController
+import android.view.WindowManager
 import com.capstone.gagambrawl.R
 
-class LoginViewModel : ViewModel() {
+class RegisterViewModel : ViewModel() {
     private var loadingDialog: AlertDialog? = null
 
-    sealed class LoginResult {
-        data class Success(val token: String, val email: String) : LoginResult()
-        data class Error(val message: String) : LoginResult()
+    sealed class RegisterResult {
+        object Success : RegisterResult()
+        data class Error(val message: String) : RegisterResult()
     }
 
     fun showLoadingDialog(context: Context) {
@@ -56,51 +53,49 @@ class LoginViewModel : ViewModel() {
         loadingDialog = null
     }
 
-    fun loginUser(credentials: LoginCredentials, callback: (LoginResult) -> Unit) {
+    fun registerUser(credentials: RegisterCredentiials, callback: (RegisterResult) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val client = OkHttpClient()
                 val json = JSONObject().apply {
                     put("email", credentials.email)
                     put("password", credentials.password)
+                    put("password_confirmation", credentials.password_confirmation)
                 }
 
-                Log.d("LoginViewModel", "Request Body: ${json}")
+                Log.d("RegisterViewModel", "Request Body: ${json.toString()}")
 
                 val request = Request.Builder()
-                    .url("https://gagambrawl-api.vercel.app/api/api/login")
+                    .url("https://gagambrawl-api.vercel.app/api/api/register")
                     .post(json.toString().toRequestBody("application/json".toMediaType()))
                     .header("Content-Type", "application/json")
                     .build()
 
                 client.newCall(request).execute().use { response ->
                     val responseBody = response.body?.string()
-                    Log.d("LoginViewModel", "Response Code: ${response.code}")
-                    Log.d("LoginViewModel", "Response Body: $responseBody")
-
+                    Log.d("RegisterViewModel", "Response Code: ${response.code}")
+                    Log.d("RegisterViewModel", "Response Body: $responseBody")
+                    
                     withContext(Dispatchers.Main) {
                         when {
-                            response.isSuccessful && responseBody != null -> {
-                                val jsonResponse = JSONObject(responseBody)
-                                val token = jsonResponse.getString("token")
-                                callback(LoginResult.Success(token, credentials.email))
+                            response.isSuccessful -> {
+                                callback(RegisterResult.Success)
                             }
-                            response.code == 401 -> {
-                                callback(LoginResult.Error("Invalid credentials"))
-                            }
-                            response.code == 404 -> {
-                                callback(LoginResult.Error("User not found"))
+                            response.code == 422 -> {
+                                val jsonError = JSONObject(responseBody ?: "")
+                                val errorMessage = jsonError.optString("message", "Email already exists")
+                                callback(RegisterResult.Error(errorMessage))
                             }
                             else -> {
-                                callback(LoginResult.Error("Login failed. Please try again."))
+                                callback(RegisterResult.Error("Registration failed. Please try again."))
                             }
                         }
                     }
                 }
             } catch (e: Exception) {
-                Log.e("LoginViewModel", "Login Error", e)
+                Log.e("RegisterViewModel", "Network Error", e)
                 withContext(Dispatchers.Main) {
-                    callback(LoginResult.Error("Network error: ${e.message}"))
+                    callback(RegisterResult.Error("Network error: ${e.message}"))
                 }
             }
         }
@@ -121,4 +116,5 @@ class LoginViewModel : ViewModel() {
             )
         }
     }
+
 }
