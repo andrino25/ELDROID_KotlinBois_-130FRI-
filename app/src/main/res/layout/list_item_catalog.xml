@@ -31,49 +31,13 @@
             android:textSize="@dimen/_16sp"
             android:textColor="@color/white"/>
 
-
-        <TextView
-            android:id="@+id/spider_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spider_breed"
-            android:text="@string/sample_text"
-            android:textColor="@color/white"
-            android:fontFamily="@font/standard"
-            android:textSize="@dimen/_13sp"
-            android:layout_marginTop="@dimen/_8dp"
-            />
-        <TextView
-            android:id="@+id/spider_origin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spider_color"
-            android:fontFamily="@font/standard"
-            android:text="@string/sample_text"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13sp"
-            />
-        <TextView
-            android:id="@+id/spider_size"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spider_origin"
-            android:fontFamily="@font/standard"
-            android:text="@string/sample_text"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13sp"
-            />
-
         <TextView
             android:id="@+id/spider_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/spider_size"
-            android:layout_marginTop="@dimen/_8dp"
+            android:layout_below="@id/spider_breed"
             android:fontFamily="@font/standard"
             android:text="@string/one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and"
             android:textColor="@color/white"/>
-
     </RelativeLayout>
-
 </RelativeLayout>

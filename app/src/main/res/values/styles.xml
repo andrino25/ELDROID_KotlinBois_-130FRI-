@@ -16,4 +16,8 @@
         <item name="android:windowExitAnimation">@anim/slow_fade_out</item>
     </style>
 
+    <style name="MaroonProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTint">@color/maroon</item>
+    </style>
+
 </resources>
