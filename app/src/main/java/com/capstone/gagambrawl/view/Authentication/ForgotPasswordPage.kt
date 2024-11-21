@@ -33,6 +33,5 @@ class ForgotPasswordPage : AppCompatActivity() {
             // Apply custom fade in/out animation with 2-second duration
             overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
         }
-
     }
 }
