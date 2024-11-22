@@ -89,7 +89,6 @@ class DashboardPage : AppCompatActivity() {
                 userEmail = user.email
                 userAddress = user.userAddress
             } catch (e: Exception) {
-                // Handle error
             }
         }
     }

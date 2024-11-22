@@ -15,7 +15,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.capstone.gagambrawl.view.Authentication.LoginPage
 import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.api.ApiService
@@ -24,8 +23,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import com.capstone.gagambrawl.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
+    private var customDialog: Dialog? = null
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
     private var token: String = ""
     private var firstName: String? = null
     private var middleName: String? = null
@@ -73,48 +76,30 @@ class ProfileFragment : Fragment() {
             R.color.black
         )
 
-        // Set user information from arguments
         setUserInformation()
 
+        setupButtons(view)
+
+        return view
+    }
+
+    private fun setupButtons(view: View) {
+        // Setup Logout Button
         val addBtn: RelativeLayout = view.findViewById(R.id.logoutButton)
         addBtn.setOnClickListener {
-            // Create a dialog with a custom layout
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_logout)  // Replace with the actual dialog layout name
-
-            // Set fade-in animation when the dialog shows
-            dialog.window?.attributes?.windowAnimations = R.style.DialogFadeAnimation
-
-            // Find the close button inside the dialog's layout
-            val closeBtn: ImageButton = dialog.findViewById(R.id.i_close_btn)
-            val logoutBtn: Button = dialog.findViewById(R.id.dialog_logoutAcc)
-
-            // Set an OnClickListener to dismiss the dialog when the close button is clicked
-            closeBtn.setOnClickListener {
-                dialog.dismiss()  // Close the dialog
-            }
-            logoutBtn.setOnClickListener {
-                val intent = Intent(requireContext(), LoginPage::class.java)
-                startActivity(intent)
-
-                requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
-                // Optionally, finish the current activity if you want to close the Profile activity after logout
-                requireActivity().finish()
-            }
-
-            // Show the dialog
-            dialog.show()
+            showLogoutDialog()
         }
 
+        // Setup Help Center Button
         val helpCenterButton: RelativeLayout = view.findViewById(R.id.helpCenterButton)
         helpCenterButton.setOnClickListener {
             val intent = Intent(requireContext(), HelpCenter::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
             startActivity(intent)
-            requireActivity().overridePendingTransition(0, 0) // No transition animation
+            requireActivity().overridePendingTransition(0, 0)
         }
 
-        // Modify the Edit Profile button click listener
+        // Setup Edit Profile Button
         val editProfileButton: RelativeLayout = view.findViewById(R.id.editProfileButton)
         editProfileButton.setOnClickListener {
             val intent = Intent(requireContext(), EditProfilePage::class.java)
@@ -129,14 +114,34 @@ class ProfileFragment : Fragment() {
             startActivityForResult(intent, EDIT_PROFILE_REQUEST)
             requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
         }
+    }
 
-        return view
+    private fun showLogoutDialog() {
+        customDialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.dialog_logout)
+            window?.attributes?.windowAnimations = R.style.DialogFadeAnimation
+
+            val closeBtn: ImageButton = findViewById(R.id.i_close_btn)
+            val logoutBtn: Button = findViewById(R.id.dialog_logoutAcc)
+
+            closeBtn.setOnClickListener {
+                dismiss()
+            }
+
+            logoutBtn.setOnClickListener {
+                val intent = Intent(requireContext(), LoginPage::class.java)
+                startActivity(intent)
+                requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
+                requireActivity().finish()
+            }
+
+            show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == EDIT_PROFILE_REQUEST && resultCode == Activity.RESULT_OK) {
-            // Refresh user data when returning from edit profile
             refreshUserData()
         }
     }
@@ -166,13 +171,20 @@ class ProfileFragment : Fragment() {
                 swipeRefreshLayout.isRefreshing = false
 
             } catch (e: Exception) {
-                // Handle error
                 activity?.runOnUiThread {
                     Toast.makeText(context, "Failed to refresh: ${e.message}", Toast.LENGTH_SHORT).show()
                     swipeRefreshLayout.isRefreshing = false
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        // Dismiss dialog if it's showing
+        customDialog?.dismiss()
+        customDialog = null
+        _binding = null
+        super.onDestroyView()
     }
 
     private fun setUserInformation() {
@@ -182,7 +194,7 @@ class ProfileFragment : Fragment() {
             if (!middleName.isNullOrEmpty()) append(" $middleName")
             lastName?.let { append(" $it") }
         }.trim()
-        
+
         profileName.text = if (fullName.isNotEmpty()) fullName else "Loading..."
         profileEmail.text = email ?: "Loading..."
         profileImage.setImageResource(R.drawable.img_pfp)

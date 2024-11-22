@@ -15,7 +15,6 @@
     <string name="catalog">Catalog</string>
     <string name="inventory">Inventory</string>
     <string name="profile">Profile</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="show_all">Show all</string>
     <string name="sample_text">Sample Text</string>
@@ -71,4 +70,7 @@
     <string name="middle_name">Middle Name</string>
     <string name="last_name">Last Name</string>
     <string name="address">Address</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+>>>>>>> 5b39462519e536589482af1451c673a7e857c5ac
 </resources>
