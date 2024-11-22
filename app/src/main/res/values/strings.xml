@@ -65,4 +65,7 @@
     <string name="one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and">One of the largest spider species in the world, known for its impressive size and</string>
     <string name="active">Active</string>
     <string name="add_image">Add Image</string>
+
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
 </resources>
