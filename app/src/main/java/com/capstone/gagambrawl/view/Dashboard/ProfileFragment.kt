@@ -12,6 +12,8 @@ import android.widget.ImageButton
 import android.widget.RelativeLayout
 import com.capstone.gagambrawl.view.Authentication.LoginPage
 import com.capstone.gagambrawl.R
+import androidx.appcompat.app.AlertDialog
+import com.capstone.gagambrawl.databinding.FragmentProfileBinding
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -19,6 +21,9 @@ private const val ARG_PARAM2 = "param2"
 class ProfileFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
+    private var customDialog: Dialog? = null  // Added to store dialog reference
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,37 +37,31 @@ class ProfileFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
 
         val addBtn: RelativeLayout = view.findViewById(R.id.logoutButton)
         addBtn.setOnClickListener {
-            // Create a dialog with a custom layout
-            val dialog = Dialog(requireContext())
-            dialog.setContentView(R.layout.dialog_logout)  // Replace with the actual dialog layout name
+            // Create and store dialog reference
+            customDialog = Dialog(requireContext()).apply {
+                setContentView(R.layout.dialog_logout)
+                window?.attributes?.windowAnimations = R.style.DialogFadeAnimation
 
-            // Set fade-in animation when the dialog shows
-            dialog.window?.attributes?.windowAnimations = R.style.DialogFadeAnimation
+                val closeBtn: ImageButton = findViewById(R.id.i_close_btn)
+                val logoutBtn: Button = findViewById(R.id.dialog_logoutAcc)
 
-            // Find the close button inside the dialog's layout
-            val closeBtn: ImageButton = dialog.findViewById(R.id.i_close_btn)
-            val logoutBtn: Button = dialog.findViewById(R.id.dialog_logoutAcc)
+                closeBtn.setOnClickListener {
+                    dismiss()
+                }
 
-            // Set an OnClickListener to dismiss the dialog when the close button is clicked
-            closeBtn.setOnClickListener {
-                dialog.dismiss()  // Close the dialog
+                logoutBtn.setOnClickListener {
+                    val intent = Intent(requireContext(), LoginPage::class.java)
+                    startActivity(intent)
+                    requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
+                    requireActivity().finish()
+                }
+
+                show()
             }
-            logoutBtn.setOnClickListener {
-                val intent = Intent(requireContext(), LoginPage::class.java)
-                startActivity(intent)
-
-                requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
-                // Optionally, finish the current activity if you want to close the Profile activity after logout
-                requireActivity().finish()
-            }
-
-            // Show the dialog
-            dialog.show()
         }
 
         val helpCenterButton: RelativeLayout = view.findViewById(R.id.helpCenterButton)
@@ -70,22 +69,21 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), HelpCenter::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
             startActivity(intent)
-            requireActivity().overridePendingTransition(0, 0) // No transition animation
+            requireActivity().overridePendingTransition(0, 0)
         }
 
         return view
     }
 
+    override fun onDestroyView() {
+        // Dismiss dialog if it's showing
+        customDialog?.dismiss()
+        customDialog = null
+        _binding = null
+        super.onDestroyView()
+    }
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ProfileFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             ProfileFragment().apply {
