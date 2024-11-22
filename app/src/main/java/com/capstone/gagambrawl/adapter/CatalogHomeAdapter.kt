@@ -9,7 +9,9 @@ import com.capstone.gagambrawl.model.Catalog
 import android.util.Log
 
 class CatalogHomeAdapter : RecyclerView.Adapter<CatalogHomeAdapter.CatalogViewHolder>() {
-    private var catalogs = listOf<Catalog>()
+    companion object {
+        private var catalogs = listOf<Catalog>()
+    }
 
     inner class CatalogViewHolder(private val binding: ListItemHomeCatalogBinding) : 
         RecyclerView.ViewHolder(binding.root) {
@@ -39,8 +41,17 @@ class CatalogHomeAdapter : RecyclerView.Adapter<CatalogHomeAdapter.CatalogViewHo
     override fun getItemCount() = catalogs.size
 
     fun updateCatalogs(newCatalogs: List<Catalog>) {
-        Log.d("CatalogHomeAdapter", "Updating catalogs: ${newCatalogs.size}")
-        catalogs = newCatalogs
+        if (catalogs.isEmpty()) {
+            Log.d("CatalogHomeAdapter", "Updating catalogs: ${newCatalogs.size}")
+            catalogs = newCatalogs
+            notifyDataSetChanged()
+        }
+    }
+
+    fun isEmpty(): Boolean = catalogs.isEmpty()
+
+    fun clearCache() {
+        catalogs = listOf()
         notifyDataSetChanged()
     }
 } 

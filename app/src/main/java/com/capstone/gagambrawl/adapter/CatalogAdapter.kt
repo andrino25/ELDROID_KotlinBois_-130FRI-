@@ -11,7 +11,10 @@ import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.model.Catalog
 
 class CatalogAdapter : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() {
-    private var catalogs = listOf<Catalog>()
+    companion object {
+        private var catalogs = listOf<Catalog>()
+        private var filteredCatalogs = listOf<Catalog>()
+    }
 
     class CatalogViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val spiderImage: ImageView = view.findViewById(R.id.spider_image)
@@ -26,7 +29,7 @@ class CatalogAdapter : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() 
     }
 
     override fun onBindViewHolder(holder: CatalogViewHolder, position: Int) {
-        val catalog = catalogs[position]
+        val catalog = filteredCatalogs[position]
         
         holder.spiderBreed.text = catalog.catalogName
         holder.spiderDescription.text = catalog.catalogDescription
@@ -38,10 +41,32 @@ class CatalogAdapter : RecyclerView.Adapter<CatalogAdapter.CatalogViewHolder>() 
             .into(holder.spiderImage)
     }
 
-    override fun getItemCount() = catalogs.size
+    override fun getItemCount() = filteredCatalogs.size
 
     fun updateCatalogs(newCatalogs: List<Catalog>) {
-        catalogs = newCatalogs
+        if (catalogs.isEmpty()) {
+            catalogs = newCatalogs
+            filteredCatalogs = newCatalogs
+            notifyDataSetChanged()
+        }
+    }
+
+    fun filter(query: String) {
+        filteredCatalogs = if (query.isEmpty()) {
+            catalogs
+        } else {
+            catalogs.filter {
+                it.catalogName.contains(query, ignoreCase = true)
+            }
+        }
+        notifyDataSetChanged()
+    }
+
+    fun isEmpty(): Boolean = catalogs.isEmpty()
+
+    fun clearCache() {
+        catalogs = listOf()
+        filteredCatalogs = listOf()
         notifyDataSetChanged()
     }
 } 

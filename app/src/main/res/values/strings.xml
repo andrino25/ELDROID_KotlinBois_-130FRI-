@@ -65,4 +65,10 @@
     <string name="one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and">One of the largest spider species in the world, known for its impressive size and</string>
     <string name="active">Active</string>
     <string name="add_image">Add Image</string>
+    <string name="loading">Loading...</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="first_name">First Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="address">Address</string>
 </resources>
