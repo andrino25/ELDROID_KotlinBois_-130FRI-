@@ -72,5 +72,12 @@
     <string name="address">Address</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
->>>>>>> 5b39462519e536589482af1451c673a7e857c5ac
+    <string name="confirm_action">Confirm Action\n</string>
+    <string name="do_you_want_to_delete_this_spider">Do you want to delete this spider?</string>
+    <string name="delete">Delete</string>
+    <string name="edit_your_spider">Edit your Spider</string>
+    <string name="save">Save</string>
+    <string name="delete_this_spider">Delete this spider?</string>
+    <string name="are_you_sure_you_want_to_delete_this_spider">Are you sure you want to delete this spider?</string>
+    >>>>>>> 5b39462519e536589482af1451c673a7e857c5ac
 </resources>
