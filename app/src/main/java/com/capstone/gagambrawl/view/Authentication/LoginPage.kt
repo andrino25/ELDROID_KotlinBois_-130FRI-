@@ -66,6 +66,10 @@ class LoginPage : AppCompatActivity() {
                     passwordField.error = "Password is required"
                     return@setOnClickListener
                 }
+                password.length < 6 -> {
+                    Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
             }
 
             // Show loading dialog
