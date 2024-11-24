@@ -73,6 +73,7 @@
                     android:layout_below="@id/spiderImage"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_16dp"
                     android:fontFamily="@font/bold"
                     android:text="@string/lunhaw"
                     android:textColor="@android:color/black"
@@ -88,23 +89,51 @@
                     android:src="@drawable/ic_star"
                     android:contentDescription="@string/favorite_icon" />
 
+                <!-- Size Label and Value -->
+                <TextView
+                    android:id="@+id/spiderSizeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spiderName"
+                    android:layout_marginStart="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:fontFamily="@font/medium"
+                    android:text="Size: "
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sp" />
+
                 <TextView
                     android:id="@+id/spiderSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderName"
-                    android:layout_marginStart="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_toEndOf="@id/spiderSizeLabel"
                     android:fontFamily="@font/standard"
                     android:text="@string/size_super_jumbo"
                     android:textSize="@dimen/_15sp"
                     android:textColor="@android:color/black" />
+
+                <!-- Status Label and Value -->
+                <TextView
+                    android:id="@+id/spiderStatusLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spiderSizeLabel"
+                    android:layout_marginStart="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:fontFamily="@font/medium"
+                    android:text="Status: "
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/_15sp" />
 
                 <TextView
                     android:id="@+id/spiderStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderSize"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_toEndOf="@id/spiderStatusLabel"
                     android:text="@string/status_active"
                     android:textColor="@color/green"
                     android:fontFamily="@font/standard"
@@ -117,9 +146,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderStatus"
                     android:layout_marginStart="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_marginTop="@dimen/_16dp"
                     android:fontFamily="@font/medium"
-                    android:text="@string/description"
+                    android:text="Description:"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_16sp" />
 
@@ -130,6 +159,7 @@
                     android:layout_below="@id/spiderDescriptionLabel"
                     android:layout_marginStart="@dimen/_16dp"
                     android:layout_marginEnd="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_8dp"
                     android:fontFamily="@font/standard"
                     android:justificationMode="inter_word"
                     android:text="@string/lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_morbi_non_diam_sit_amet_odio_viverra_aliquet"

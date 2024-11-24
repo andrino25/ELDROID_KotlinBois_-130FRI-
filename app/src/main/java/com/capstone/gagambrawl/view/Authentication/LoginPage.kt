@@ -93,6 +93,7 @@ class LoginPage : AppCompatActivity() {
                             val intent = Intent(this, DashboardPage::class.java).apply {
                                 putExtra("token", result.token)
                                 putExtra("email", result.email)
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             }
                             startActivity(intent)
                             finish()

@@ -13,7 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class DashboardPage : AppCompatActivity() {
-    private lateinit var bottomNavigationView: BottomNavigationView
+    lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var token: String
     private var userFirstName: String? = null
     private var userMiddleName: String? = null
@@ -27,11 +27,12 @@ class DashboardPage : AppCompatActivity() {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        // bearer token para sa mga methods
+        // Get token from intent
         token = intent.getStringExtra("token") ?: ""
 
         fetchUserData()
 
+        // Pass token to initial fragment
         loadFragment(HomeFragment())
 
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -45,7 +46,13 @@ class DashboardPage : AppCompatActivity() {
                     true
                 }
                 R.id.nav_inventory -> {
-                    loadFragment(InventoryFragment())
+                    // Create InventoryFragment with token
+                    val inventoryFragment = InventoryFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("token", token)
+                        }
+                    }
+                    loadFragment(inventoryFragment)
                     true
                 }
                 R.id.nav_profile -> {

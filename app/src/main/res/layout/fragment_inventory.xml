@@ -23,14 +23,20 @@
             android:textColor="@color/white"
             android:background="@color/maroon"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/inventory_recyclerView"
-            android:layout_marginHorizontal="@dimen/_20dp"
-            android:layout_below="@id/inventoryHeader"
-            android:layout_marginTop="@dimen/_20dp"
-            tools:listitem="@layout/list_item_inventory"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:layout_below="@id/inventoryHeader"
+            android:layout_marginTop="@dimen/_20dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/spidersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/_8dp"
+                android:clipToPadding="false"/>
+
+        </ScrollView>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/addBtn"

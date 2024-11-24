@@ -7,19 +7,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.adapter.CatalogHomeAdapter
+import com.capstone.gagambrawl.adapter.HomeInventoryAdapter
 import com.capstone.gagambrawl.databinding.FragmentHomeBinding
 import com.capstone.gagambrawl.model.Catalog
+import com.capstone.gagambrawl.model.Spider
+import com.capstone.gagambrawl.viewmodel.SharedViewModel
 import okhttp3.*
 import org.json.JSONArray
 import java.io.IOException
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var catalogHomeAdapter: CatalogHomeAdapter
+    private lateinit var homeInventoryAdapter: HomeInventoryAdapter
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,12 +39,20 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         setupRecyclerView()
+        setupClickListeners()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupObservers()
         fetchCatalogs()
+
+        val token = arguments?.getString("token") 
+            ?: activity?.intent?.getStringExtra("token") 
+            ?: return
+        
+        sharedViewModel.loadSpiders("Bearer $token")
     }
 
     private fun setupRecyclerView() {
@@ -45,6 +61,24 @@ class HomeFragment : Fragment() {
             adapter = catalogHomeAdapter
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             setHasFixedSize(true)
+        }
+
+        homeInventoryAdapter = HomeInventoryAdapter { /* Do nothing */ }
+        binding.inventoryRecyclerView.apply {
+            adapter = homeInventoryAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.showAllBtn.setOnClickListener {
+            // Get the activity as DashboardPage
+            val dashboardActivity = activity as? DashboardPage
+            if (dashboardActivity != null) {
+                // Update bottom navigation and load inventory fragment using the activity's method
+                dashboardActivity.bottomNavigationView.selectedItemId = R.id.nav_inventory
+            }
         }
     }
 
@@ -126,6 +160,32 @@ class HomeFragment : Fragment() {
             Log.e("HomeFragment", "JSON string that failed: $jsonString")
             emptyList()
         }
+    }
+
+    private fun setupObservers() {
+        sharedViewModel.spiders.observe(viewLifecycleOwner) { spiders ->
+            spiders?.let {
+                // Only show first 4 spiders in home screen
+                val limitedSpiders = if (it.size > 4) it.take(4) else it
+                homeInventoryAdapter.updateSpiders(limitedSpiders)
+            }
+        }
+    }
+
+    private fun showSpiderDetails(spider: Spider) {
+        val bundle = Bundle().apply {
+            putString("spiderId", spider.id)
+            putString("token", arguments?.getString("token"))
+        }
+
+        val detailsFragment = InventorySpiderDetailsFragment().apply {
+            arguments = bundle
+        }
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, detailsFragment)
+            .addToBackStack(null)
+            .commit()
     }
 
     override fun onDestroyView() {
