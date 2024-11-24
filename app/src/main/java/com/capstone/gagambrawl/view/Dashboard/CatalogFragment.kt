@@ -14,6 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.capstone.gagambrawl.adapter.CatalogAdapter
 import kotlinx.coroutines.launch
+import android.widget.SearchView
+import com.capstone.gagambrawl.model.Catalog
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -52,6 +54,7 @@ class CatalogFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         setupRecyclerView()
+        setupSearchView()
         fetchCatalogs()
     }
 
@@ -63,10 +66,30 @@ class CatalogFragment : Fragment() {
         }
     }
 
+    private fun setupSearchView() {
+        binding.cSearchBar.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                catalogAdapter.filter(newText ?: "")
+                return true
+            }
+        })
+    }
+
     private fun fetchCatalogs() {
-        // Show loading spinner
+        // Show loading spinner initially
         binding.loadingSpinner.visibility = View.VISIBLE
         binding.catalogRecyclerView.visibility = View.GONE
+
+        if (!catalogAdapter.isEmpty()) {
+            // Data is already loaded, just hide the spinner and show the RecyclerView
+            binding.loadingSpinner.visibility = View.GONE
+            binding.catalogRecyclerView.visibility = View.VISIBLE
+            return
+        }
 
         lifecycleScope.launch {
             try {
@@ -84,7 +107,15 @@ class CatalogFragment : Fragment() {
         }
     }
 
+    private fun forceRefreshCatalogs() {
+        catalogAdapter.clearCache()
+        fetchCatalogs()
+    }
+
     companion object {
+        // Add cached catalogs
+        private var cachedCatalogs: List<Catalog>? = null
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
