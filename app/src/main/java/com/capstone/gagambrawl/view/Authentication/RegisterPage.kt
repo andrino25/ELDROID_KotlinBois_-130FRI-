@@ -48,23 +48,32 @@ class RegisterPage : AppCompatActivity() {
             val confirmPassword = confirmPasswordField.text.toString().trim()
 
             when {
-                    email.isEmpty() -> {
-                        Toast.makeText(this, "Email is required", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-                    password.isEmpty() -> {
-                        Toast.makeText(this, "Password is required", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-                    confirmPassword.isEmpty() -> {
-                        Toast.makeText(this, "Confirm password is required", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
-                    password != confirmPassword -> {
-                        Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-                        return@setOnClickListener
-                    }
+                email.isEmpty() -> {
+                    Toast.makeText(this, "Email is required", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                password.isEmpty() -> {
+                    Toast.makeText(this, "Password is required", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                confirmPassword.isEmpty() -> {
+                    Toast.makeText(this, "Confirm password is required", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                password != confirmPassword -> {
+                    Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                password.length < 6 -> {
+                    Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                confirmPassword.length < 6 -> {
+                    Toast.makeText(this, "Confirm password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
             }
+
 
             // Show loading dialog
             viewModel.showLoadingDialog(this)
