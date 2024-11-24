@@ -107,4 +107,18 @@
     <string name="featured_catalogs">Featured Catalogs</string>
     <string name="your_spiders">Your Spiders</string>
 
+    <!-- Spider Health Status Options -->
+    <string-array name="health_status_array">
+        <item>Healthy</item>
+        <item>Injured</item>
+        <item>Unavailable</item>
+    </string-array>
+
+    <!-- Spider Size Options -->
+    <string-array name="size_array">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
 </resources>

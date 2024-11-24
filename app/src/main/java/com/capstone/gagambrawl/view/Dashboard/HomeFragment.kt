@@ -15,23 +15,18 @@ import com.capstone.gagambrawl.adapter.HomeInventoryAdapter
 import com.capstone.gagambrawl.databinding.FragmentHomeBinding
 import com.capstone.gagambrawl.model.Catalog
 import com.capstone.gagambrawl.model.Spider
-import com.capstone.gagambrawl.viewmodel.SharedViewModel
+import com.capstone.gagambrawl.viewmodel.InventoryViewModel
 import okhttp3.*
 import org.json.JSONArray
 import java.io.IOException
-import com.google.android.material.bottomnavigation.BottomNavigationView
-
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var catalogHomeAdapter: CatalogHomeAdapter
     private lateinit var homeInventoryAdapter: HomeInventoryAdapter
-    private val sharedViewModel: SharedViewModel by activityViewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel: InventoryViewModel by activityViewModels()
+    private var token: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,11 +43,15 @@ class HomeFragment : Fragment() {
         setupObservers()
         fetchCatalogs()
 
-        val token = arguments?.getString("token") 
+        token = arguments?.getString("token") 
             ?: activity?.intent?.getStringExtra("token") 
             ?: return
         
-        sharedViewModel.loadSpiders("Bearer $token")
+        if (!token.startsWith("Bearer ")) {
+            token = "Bearer $token"
+        }
+        
+        viewModel.loadSpiders(token)
     }
 
     private fun setupRecyclerView() {
@@ -63,7 +62,9 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
         }
 
-        homeInventoryAdapter = HomeInventoryAdapter { /* Do nothing */ }
+        homeInventoryAdapter = HomeInventoryAdapter { spider -> 
+            showSpiderDetails(spider)
+        }
         binding.inventoryRecyclerView.apply {
             adapter = homeInventoryAdapter
             layoutManager = LinearLayoutManager(requireContext())
@@ -163,25 +164,22 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        sharedViewModel.spiders.observe(viewLifecycleOwner) { spiders ->
+        viewModel.spiders.observe(viewLifecycleOwner) { spiders ->
             spiders?.let {
                 // Only show first 4 spiders in home screen
                 val limitedSpiders = if (it.size > 4) it.take(4) else it
                 homeInventoryAdapter.updateSpiders(limitedSpiders)
             }
         }
+
+        viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            // Handle loading state if needed
+        }
     }
 
     private fun showSpiderDetails(spider: Spider) {
-        val bundle = Bundle().apply {
-            putString("spiderId", spider.id)
-            putString("token", arguments?.getString("token"))
-        }
-
-        val detailsFragment = InventorySpiderDetailsFragment().apply {
-            arguments = bundle
-        }
-
+        val detailsFragment = InventorySpiderDetailsFragment.newInstance(spider)
+        
         parentFragmentManager.beginTransaction()
             .replace(R.id.container, detailsFragment)
             .addToBackStack(null)

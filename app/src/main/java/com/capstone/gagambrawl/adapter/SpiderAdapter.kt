@@ -16,6 +16,18 @@ class SpiderAdapter(
     private val onSpiderClick: (Spider) -> Unit
 ) : RecyclerView.Adapter<SpiderAdapter.SpiderViewHolder>() {
 
+    // Add companion object with shared color logic
+    companion object {
+        fun getStatusColor(status: String, context: android.content.Context): Int {
+            return when (status) {
+                "Healthy" -> context.getColor(R.color.status_healthy)
+                "Injured" -> context.getColor(R.color.status_injured)
+                "Unavailable" -> context.getColor(R.color.status_unavailable)
+                else -> context.getColor(R.color.gray)
+            }
+        }
+    }
+
     class SpiderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val spiderImage: ShapeableImageView = view.findViewById(R.id.i_spider_image)
         val spiderBreed: TextView = view.findViewById(R.id.i_spider_breed)
@@ -34,6 +46,15 @@ class SpiderAdapter(
         
         holder.spiderBreed.text = spider.spiderName
         holder.spiderStatus.text = spider.spiderHealthStatus
+
+        // Set status color based on health status
+        val statusColor = when (spider.spiderHealthStatus) {
+            "Healthy" -> holder.itemView.context.getColor(R.color.status_healthy)
+            "Injured" -> holder.itemView.context.getColor(R.color.status_injured)
+            "Unavailable" -> holder.itemView.context.getColor(R.color.status_unavailable)
+            else -> holder.itemView.context.getColor(R.color.gray)
+        }
+        holder.spiderStatus.setTextColor(statusColor)
 
         // Load spider image using Glide
         Glide.with(holder.itemView.context)
