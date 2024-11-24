@@ -19,6 +19,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.util.Log
+import android.widget.ImageView
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
+import com.bumptech.glide.Glide
+import android.provider.OpenableColumns
+import java.io.File
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 
 class EditProfilePage : AppCompatActivity() {
     private lateinit var saveButton: Button
@@ -29,6 +39,17 @@ class EditProfilePage : AppCompatActivity() {
     private lateinit var headerContainer: RelativeLayout
     private var token: String = ""
     private var hasChanges = false
+    private lateinit var userProfilePicRef: ImageView
+    private var selectedImageUri: Uri? = null
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            selectedImageUri = it
+            userProfilePicRef.setImageURI(it)
+            hasChanges = true
+            saveButton.visibility = View.VISIBLE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +60,7 @@ class EditProfilePage : AppCompatActivity() {
         lastNameET = findViewById(R.id.lastNameET)
         addressET = findViewById(R.id.addressET)
         headerContainer = findViewById(R.id.headerContainer)
+        userProfilePicRef = findViewById(R.id.userProfilePicRef)
 
         // Get all user data from intent
         token = intent.getStringExtra("token") ?: ""
@@ -51,6 +73,21 @@ class EditProfilePage : AppCompatActivity() {
         lastNameET.setText(intent.getStringExtra("lastName"))
         addressET.setText(address)
 
+
+        // Load existing profile picture if available
+        val profilePicUrl = intent.getStringExtra("userProfilePicRef")
+        if (!profilePicUrl.isNullOrEmpty()) {
+            Log.d("EditProfilePage", "Loading profile pic from URL: $profilePicUrl")
+            Glide.with(this)
+                .load(profilePicUrl)
+                .placeholder(R.drawable.ic_default_profile)
+                .error(R.drawable.ic_default_profile)
+                .into(userProfilePicRef)
+        } else {
+            Log.d("EditProfilePage", "No profile pic URL available")
+            userProfilePicRef.setImageResource(R.drawable.ic_default_profile)
+        }
+
         setupSaveButton()
         setupTextChangeListeners()
 
@@ -58,6 +95,11 @@ class EditProfilePage : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
             overridePendingTransition(0, 0)
+        }
+
+        // Setup edit profile picture button
+        findViewById<ImageButton>(R.id.editProfilePicButton).setOnClickListener {
+            pickImage.launch("image/*")
         }
     }
 
@@ -112,25 +154,65 @@ class EditProfilePage : AppCompatActivity() {
 
                 val apiService = retrofit.create(ApiService::class.java)
 
-                val updateData = mapOf(
-                    "_method" to "PATCH",
-                    "userFirstName" to firstNameET.text.toString().takeIf { it.isNotEmpty() },
-                    "userMiddleName" to middleNameET.text.toString().takeIf { it.isNotEmpty() },
-                    "userLastName" to lastNameET.text.toString().takeIf { it.isNotEmpty() },
-                    "userAddress" to addressET.text.toString().takeIf { it.isNotEmpty() }
+                // Create RequestBody instances for text fields
+                val methodPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "PATCH")
+                val firstNamePart = firstNameET.text.toString().takeIf { it.isNotEmpty() }?.let {
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), it)
+                }
+                val middleNamePart = middleNameET.text.toString().takeIf { it.isNotEmpty() }?.let {
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), it)
+                }
+                val lastNamePart = lastNameET.text.toString().takeIf { it.isNotEmpty() }?.let {
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), it)
+                }
+                val addressPart = addressET.text.toString().takeIf { it.isNotEmpty() }?.let {
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), it)
+                }
+
+                // Create MultipartBody.Part for image if selected
+                val imagePart = selectedImageUri?.let { uri ->
+                    // Get the file name from the URI
+                    val fileName = getFileName(uri) ?: "profile_image.jpg"
+                    
+                    // Convert URI to actual file
+                    val inputStream = contentResolver.openInputStream(uri)
+                    val file = File(cacheDir, fileName)
+                    inputStream?.use { input ->
+                        file.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+
+                    // Create RequestBody from file
+                    val requestFile = RequestBody.create(
+                        (contentResolver.getType(uri) ?: "image/*").toMediaTypeOrNull(),
+                        file
+                    )
+
+                    // Create MultipartBody.Part
+                    MultipartBody.Part.createFormData("userProfilePicRef", fileName, requestFile)
+                }
+
+                Log.d("EditProfilePage", "Uploading image: ${imagePart != null}")
+
+                val response = apiService.updateUserProfileWithImage(
+                    "Bearer $token",
+                    methodPart,
+                    firstNamePart,
+                    middleNamePart,
+                    lastNamePart,
+                    addressPart,
+                    imagePart
                 )
 
-                Log.d("EditProfilePage", "Making API request with data: $updateData")
-
-                val response = apiService.updateUserProfile("Bearer $token", updateData)
+                Log.d("EditProfilePage", "Profile update response: $response")
                 
                 Toast.makeText(this@EditProfilePage, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                 saveButton.visibility = View.GONE
                 hasChanges = false
                 
-                // Set result OK so ProfileFragment knows to refresh
                 setResult(RESULT_OK)
-                finish() // Close the edit page after successful update
+                finish()
             } catch (e: Exception) {
                 when (e) {
                     is retrofit2.HttpException -> {
@@ -154,5 +236,29 @@ class EditProfilePage : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    // Helper function to get file name from URI
+    private fun getFileName(uri: Uri): String? {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    val columnIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (columnIndex != -1) {
+                        result = it.getString(columnIndex)
+                    }
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.path
+            val cut = result?.lastIndexOf('/')
+            if (cut != -1) {
+                result = result?.substring(cut!! + 1)
+            }
+        }
+        return result
     }
 }

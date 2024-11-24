@@ -17,6 +17,7 @@ import com.capstone.gagambrawl.view.Dashboard.DashboardPage
 import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.model.LoginCredentials
 import com.capstone.gagambrawl.viewmodel.LoginViewModel
+import com.capstone.gagambrawl.utils.SessionManager
 
 class LoginPage : AppCompatActivity() {
     private lateinit var viewModel: LoginViewModel
@@ -27,6 +28,19 @@ class LoginPage : AppCompatActivity() {
 
         viewModel = LoginViewModel()
         viewModel.setupWindowFullscreen(this)
+
+        // Check if user is already logged in
+        val sessionManager = SessionManager(this)
+        if (sessionManager.isLoggedIn()) {
+            val intent = Intent(this, DashboardPage::class.java).apply {
+                putExtra("token", sessionManager.fetchAuthToken())
+                putExtra("email", sessionManager.fetchUserEmail())
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            startActivity(intent)
+            finish()
+            return
+        }
 
         // Set up the button with a slow fade transition
         val toRegister = findViewById<TextView>(R.id.lp_et_toRegister)
@@ -81,7 +95,7 @@ class LoginPage : AppCompatActivity() {
                 password = password
             )
 
-            viewModel.loginUser(credentials) { result ->
+            viewModel.loginUser(credentials, this) { result ->
                 runOnUiThread {
                     // Dismiss loading dialog
                     viewModel.dismissLoadingDialog()

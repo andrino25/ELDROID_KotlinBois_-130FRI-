@@ -95,6 +95,7 @@
                     android:background="@drawable/spider_white_container_box"
                     android:fontFamily="@font/standard"
                     android:hint="Description"
+                    android:singleLine="true"
                     android:paddingHorizontal="@dimen/_15dp"
                     android:textSize="@dimen/_14sp" />
 

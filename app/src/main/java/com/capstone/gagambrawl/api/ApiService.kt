@@ -13,6 +13,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.DELETE
 
 interface ApiService {
     @GET("catalogs")
@@ -47,4 +48,26 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("spiderId") spiderId: String
     ): Spider
+
+    @DELETE("api/api/spiders/{spiderId}")
+    suspend fun deleteSpider(
+        @Header("Authorization") token: String,
+        @Path("spiderId") spiderId: String
+    ): DeleteResponse
+
+    @Multipart
+    @POST("api/api/user/edit")
+    suspend fun updateUserProfileWithImage(
+        @Header("Authorization") token: String,
+        @Part("_method") method: RequestBody,
+        @Part("userFirstName") firstName: RequestBody?,
+        @Part("userMiddleName") middleName: RequestBody?,
+        @Part("userLastName") lastName: RequestBody?,
+        @Part("userAddress") address: RequestBody?,
+        @Part userProfilePicRef: MultipartBody.Part?
+    ): User
+
+    data class DeleteResponse(
+        val message: String
+    )
 } 

@@ -26,16 +26,14 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/inventoryHeader"
-            android:layout_marginTop="@dimen/_20dp">
+            android:layout_below="@id/inventoryHeader">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/spidersRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/_8dp"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_16dp"
                 android:clipToPadding="false"/>
-
         </ScrollView>
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -49,6 +47,5 @@
             android:layout_marginEnd="@dimen/_20dp"
             android:layout_marginBottom="@dimen/_20dp"
             android:src="@drawable/ic_add" />
-
     </RelativeLayout>
 </FrameLayout>

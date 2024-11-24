@@ -28,6 +28,9 @@ class InventoryViewModel : ViewModel() {
     private val _addSpiderResult = MutableLiveData<Result<String>>()
     val addSpiderResult: LiveData<Result<String>> = _addSpiderResult
 
+    private val _deleteResult = MutableLiveData<Result<String>>()
+    val deleteResult: LiveData<Result<String>> = _deleteResult
+
     private val apiService: ApiService by lazy {
         Retrofit.Builder()
             .baseUrl("https://gagambrawl-api.vercel.app/")
@@ -60,15 +63,12 @@ class InventoryViewModel : ViewModel() {
     }
 
     fun refreshSpiders(token: String) {
-        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val spiderList = apiService.getSpiders(token)
                 _spiders.value = spiderList
             } catch (e: Exception) {
                 // Keep existing data on refresh failure
-            } finally {
-                _isLoading.value = false
             }
         }
     }
@@ -127,6 +127,23 @@ class InventoryViewModel : ViewModel() {
                 _addSpiderResult.value = Result.success("Spider added successfully")
             } catch (e: Exception) {
                 _addSpiderResult.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun deleteSpider(token: String, spiderId: String) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.deleteSpider(token, spiderId)
+                _deleteResult.value = Result.success(response.message)
+                
+                // Remove the deleted spider from the current list
+                _spiders.value = _spiders.value?.filter { it.spiderId.toString() != spiderId }
+                
+                // Refresh the full list from the server
+                refreshSpiders(token)
+            } catch (e: Exception) {
+                _deleteResult.value = Result.failure(e)
             }
         }
     }

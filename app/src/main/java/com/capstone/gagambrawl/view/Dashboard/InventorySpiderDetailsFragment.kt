@@ -1,20 +1,26 @@
 package com.capstone.gagambrawl.view.Dashboard
 
+import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.api.ApiService
 import com.capstone.gagambrawl.databinding.FragmentInventorySpiderDetailsBinding
 import com.capstone.gagambrawl.model.Spider
+import com.capstone.gagambrawl.utils.SessionManager
+import com.capstone.gagambrawl.viewmodel.InventoryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,6 +33,7 @@ class InventorySpiderDetailsFragment : Fragment() {
     private var _binding: FragmentInventorySpiderDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var spider: Spider
+    private val viewModel: InventoryViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,12 +100,54 @@ class InventorySpiderDetailsFragment : Fragment() {
             }
 
             deleteDetailsButton.setOnClickListener {
-                Toast.makeText(context, "Delete functionality coming soon", Toast.LENGTH_SHORT).show()
+                showDeleteConfirmationDialog()
             }
 
             favoriteIcon.setOnClickListener {
                 Toast.makeText(context, "Favorite functionality coming soon", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val dialog = Dialog(requireContext())
+        dialog.setContentView(R.layout.dialog_delete)
+        
+        // Setup dialog buttons
+        dialog.findViewById<ImageButton>(R.id.i_close_btn).setOnClickListener {
+            dialog.dismiss()
+        }
+        
+        dialog.findViewById<Button>(R.id.btn_DeleteSpider).setOnClickListener {
+            var token = requireActivity().intent.getStringExtra("token") ?:
+                       SessionManager(requireContext()).fetchAuthToken() ?: ""
+            
+            if (!token.startsWith("Bearer ")) {
+                token = "Bearer $token"
+            }
+            
+            viewModel.deleteSpider(token, spider.spiderId.toString())
+            dialog.dismiss()
+        }
+        
+        dialog.show()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        
+        viewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+            result.fold(
+                onSuccess = { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    // Navigate back to inventory
+                    parentFragmentManager.popBackStack()
+                },
+                onFailure = { exception ->
+                    Toast.makeText(context, "Failed to delete spider: ${exception.message}", 
+                                 Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 

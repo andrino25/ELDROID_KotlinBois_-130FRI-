@@ -25,6 +25,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.WindowInsetsController
 import com.capstone.gagambrawl.R
+import com.capstone.gagambrawl.utils.SessionManager
 
 class LoginViewModel : ViewModel() {
     private var loadingDialog: AlertDialog? = null
@@ -56,7 +57,7 @@ class LoginViewModel : ViewModel() {
         loadingDialog = null
     }
 
-    fun loginUser(credentials: LoginCredentials, callback: (LoginResult) -> Unit) {
+    fun loginUser(credentials: LoginCredentials, context: Context, callback: (LoginResult) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val client = OkHttpClient()
@@ -83,6 +84,12 @@ class LoginViewModel : ViewModel() {
                             response.isSuccessful && responseBody != null -> {
                                 val jsonResponse = JSONObject(responseBody)
                                 val token = jsonResponse.getString("token")
+                                
+                                // Save session data
+                                val sessionManager = SessionManager(context)
+                                sessionManager.saveAuthToken(token)
+                                sessionManager.saveUserEmail(credentials.email)
+                                
                                 callback(LoginResult.Success(token, credentials.email))
                             }
                             response.code == 401 -> {

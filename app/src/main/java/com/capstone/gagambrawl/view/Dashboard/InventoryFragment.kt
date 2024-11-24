@@ -26,6 +26,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import android.widget.ArrayAdapter
+import com.capstone.gagambrawl.utils.SessionManager
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -193,5 +194,20 @@ class InventoryFragment : Fragment() {
             .replace(R.id.container, detailsFragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh spiders list when returning to fragment
+        val token = arguments?.getString("token") ?: 
+                    activity?.intent?.getStringExtra("token") ?: 
+                    SessionManager(requireContext()).fetchAuthToken() ?: ""
+        
+        if (!token.startsWith("Bearer ")) {
+            this.token = "Bearer $token"
+        }
+        
+        // Force refresh the spiders list
+        viewModel.refreshSpiders(token)
     }
 }

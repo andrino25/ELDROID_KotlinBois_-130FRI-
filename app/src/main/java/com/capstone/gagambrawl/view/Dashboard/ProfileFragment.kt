@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import com.capstone.gagambrawl.databinding.FragmentProfileBinding
+import com.bumptech.glide.Glide
+import com.capstone.gagambrawl.utils.SessionManager
 
 class ProfileFragment : Fragment() {
     private var customDialog: Dialog? = null
@@ -35,11 +37,13 @@ class ProfileFragment : Fragment() {
     private var lastName: String? = null
     private var email: String? = null
     private var address: String? = null
+    private var profilePic: String? = null
     private lateinit var profileName: TextView
     private lateinit var profileEmail: TextView
     private lateinit var profileImage: ImageView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val EDIT_PROFILE_REQUEST = 1001
+    private var userProfilePicRef: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +54,7 @@ class ProfileFragment : Fragment() {
             lastName = it.getString("lastName")
             email = it.getString("email")
             address = it.getString("address")
+            userProfilePicRef = it.getString("userProfilePicRef")
         }
     }
 
@@ -110,6 +115,7 @@ class ProfileFragment : Fragment() {
                 putExtra("lastName", lastName)
                 putExtra("email", email)
                 putExtra("address", address)
+                putExtra("userProfilePicRef", userProfilePicRef)
             }
             startActivityForResult(intent, EDIT_PROFILE_REQUEST)
             requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
@@ -129,10 +135,21 @@ class ProfileFragment : Fragment() {
             }
 
             logoutBtn.setOnClickListener {
-                val intent = Intent(requireContext(), LoginPage::class.java)
+                // Clear session using SessionManager
+                val sessionManager = SessionManager(requireContext())
+                sessionManager.clearSession()
+
+                // Create intent with flags to clear task stack
+                val intent = Intent(requireContext(), LoginPage::class.java).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
+                
+                // Dismiss the dialog before navigating
+                dismiss()
+                
                 startActivity(intent)
-                requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
                 requireActivity().finish()
+                requireActivity().overridePendingTransition(R.anim.slow_fade_in, R.anim.slow_fade_out)
             }
 
             show()
@@ -163,6 +180,7 @@ class ProfileFragment : Fragment() {
                 lastName = user.userLastName
                 email = user.email
                 address = user.userAddress
+                userProfilePicRef = user.userProfilePicRef
 
                 // Update the UI
                 setUserInformation()
@@ -195,8 +213,18 @@ class ProfileFragment : Fragment() {
             lastName?.let { append(" $it") }
         }.trim()
 
-        profileName.text = if (fullName.isNotEmpty()) fullName else "Loading..."
-        profileEmail.text = email ?: "Loading..."
-        profileImage.setImageResource(R.drawable.img_pfp)
+        profileName.text = if (fullName.isNotEmpty()) fullName else "User"
+        profileEmail.text = email ?: "User"
+        
+        // Load profile picture using Glide
+        if (!userProfilePicRef.isNullOrEmpty()) {
+            Glide.with(this)
+                .load(userProfilePicRef)
+                .placeholder(R.drawable.ic_default_profile)
+                .error(R.drawable.ic_default_profile)
+                .into(profileImage)
+        } else {
+            profileImage.setImageResource(R.drawable.ic_default_profile)
+        }
     }
 }

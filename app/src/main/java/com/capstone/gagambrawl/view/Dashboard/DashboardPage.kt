@@ -1,10 +1,13 @@
 package com.capstone.gagambrawl.view.Dashboard
 
 import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.api.ApiService
+import com.capstone.gagambrawl.utils.SessionManager
+import com.capstone.gagambrawl.view.Authentication.LoginPage
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +23,9 @@ class DashboardPage : AppCompatActivity() {
     private var userLastName: String? = null
     private var userEmail: String? = null
     private var userAddress: String? = null
+    private var userProfilePicRef: String? = null
     private var currentFragmentId = R.id.nav_home
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +33,10 @@ class DashboardPage : AppCompatActivity() {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
 
-        // Get token from intent
-        token = intent.getStringExtra("token") ?: ""
+        sessionManager = SessionManager(this)
+        
+        // Get token from session manager if not provided in intent
+        token = intent.getStringExtra("token") ?: sessionManager.fetchAuthToken() ?: ""
 
         fetchUserData()
 
@@ -78,6 +85,7 @@ class DashboardPage : AppCompatActivity() {
                             putString("lastName", userLastName)
                             putString("address", userAddress)
                             putString("email", userEmail)
+                            putString("userProfilePicRef", userProfilePicRef)
                         }
                     })
                     true
@@ -113,6 +121,7 @@ class DashboardPage : AppCompatActivity() {
                 userLastName = user.userLastName
                 userEmail = user.email
                 userAddress = user.userAddress
+                userProfilePicRef = user.userProfilePicRef
             } catch (e: Exception) {
             }
         }
@@ -128,5 +137,14 @@ class DashboardPage : AppCompatActivity() {
             is ProfileFragment -> currentFragmentId = R.id.nav_profile
         }
         super.onBackPressed()
+    }
+
+    fun logout() {
+        sessionManager.clearSession()
+        val intent = Intent(this, LoginPage::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
     }
 }
