@@ -1,14 +1,19 @@
 package com.capstone.gagambrawl.view.Dashboard
 
 import android.app.Dialog
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -28,12 +33,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
+import android.app.Activity
+import android.content.Intent
 
 class InventorySpiderDetailsFragment : Fragment() {
     private var _binding: FragmentInventorySpiderDetailsBinding? = null
     private val binding get() = _binding!!
     private lateinit var spider: Spider
     private val viewModel: InventoryViewModel by activityViewModels()
+    private var selectedImageUri: Uri? = null
+    private var editSpiderDialog: Dialog? = null
+    private val PICK_IMAGE_REQUEST = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +66,7 @@ class InventorySpiderDetailsFragment : Fragment() {
         binding.apply {
             spiderName.text = spider.spiderName
             spiderSize.text = "Size: ${spider.spiderSize}"
+            spiderValue.text = "Market Value: ₱${spider.spiderEstimatedMarketValue}"
             spiderStatus.text = "Status: ${spider.spiderHealthStatus}"
             spiderDescription.text = spider.spiderDescription
 
@@ -79,6 +90,7 @@ class InventorySpiderDetailsFragment : Fragment() {
             spiderImage.visibility = View.VISIBLE
             spiderName.visibility = View.VISIBLE
             spiderSize.visibility = View.VISIBLE
+            spiderValue.visibility = View.VISIBLE
             spiderStatus.visibility = View.VISIBLE
             spiderDescriptionLabel.visibility = View.VISIBLE
             spiderDescription.visibility = View.VISIBLE
@@ -96,7 +108,7 @@ class InventorySpiderDetailsFragment : Fragment() {
             }
 
             editDetailsButton.setOnClickListener {
-                Toast.makeText(context, "Edit functionality coming soon", Toast.LENGTH_SHORT).show()
+                showEditSpiderDialog()
             }
 
             deleteDetailsButton.setOnClickListener {
@@ -133,27 +145,166 @@ class InventorySpiderDetailsFragment : Fragment() {
         dialog.show()
     }
 
+    private fun showEditSpiderDialog() {
+        editSpiderDialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.dialog_edit_spider)
+
+            // Set existing values
+            findViewById<EditText>(R.id.edit_dialog_spider_name).setText(spider.spiderName)
+            findViewById<EditText>(R.id.edit_dialog_spider_value).setText(spider.spiderEstimatedMarketValue.toString())
+            findViewById<EditText>(R.id.edit_dialog_spider_description).setText(spider.spiderDescription)
+
+            // Setup spinners
+            setupSpinners(this, spider.spiderHealthStatus, spider.spiderSize)
+
+            // Load existing image
+            val imageView = findViewById<ImageView>(R.id.edit_image_view)
+            Glide.with(requireContext())
+                .load(spider.spiderImageRef)
+                .into(imageView)
+
+            // Setup click listeners
+            findViewById<ImageButton>(R.id.i_close_btn).setOnClickListener {
+                dismiss()
+            }
+
+            findViewById<RelativeLayout>(R.id.dialog_spider_desc).setOnClickListener {
+                pickImage()
+            }
+
+            findViewById<Button>(R.id.dialog_edit_spiderBtn).setOnClickListener {
+                val name = findViewById<EditText>(R.id.edit_dialog_spider_name).text.toString()
+                val health = findViewById<Spinner>(R.id.edit_dialog_spider_health).selectedItem.toString()
+                val size = findViewById<Spinner>(R.id.edit_dialog_spider_size).selectedItem.toString()
+                val value = findViewById<EditText>(R.id.edit_dialog_spider_value).text.toString().toDoubleOrNull()
+                val description = findViewById<EditText>(R.id.edit_dialog_spider_description).text.toString()
+
+                var token = requireActivity().intent.getStringExtra("token") ?:
+                           SessionManager(requireContext()).fetchAuthToken() ?: ""
+                
+                if (!token.startsWith("Bearer ")) {
+                    token = "Bearer $token"
+                }
+
+                viewModel.updateSpider(
+                    token,
+                    spider.spiderId.toString(),
+                    name,
+                    health,
+                    size,
+                    value,
+                    description,
+                    selectedImageUri,
+                    requireContext(),
+                    spider
+                )
+            }
+
+            show()
+        }
+    }
+
+    private fun setupSpinners(dialog: Dialog, currentHealth: String, currentSize: String) {
+        val healthSpinner = dialog.findViewById<Spinner>(R.id.edit_dialog_spider_health)
+        val sizeSpinner = dialog.findViewById<Spinner>(R.id.edit_dialog_spider_size)
+
+        // Setup health spinner
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.health_status_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            healthSpinner.adapter = adapter
+            // Set current selection
+            val position = adapter.getPosition(currentHealth)
+            healthSpinner.setSelection(position)
+        }
+
+        // Setup size spinner
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.size_array,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            sizeSpinner.adapter = adapter
+            // Set current selection
+            val position = adapter.getPosition(currentSize)
+            sizeSpinner.setSelection(position)
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         
         viewModel.deleteResult.observe(viewLifecycleOwner) { result ->
-            result.fold(
-                onSuccess = { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    // Navigate back to inventory
-                    parentFragmentManager.popBackStack()
-                },
-                onFailure = { exception ->
-                    Toast.makeText(context, "Failed to delete spider: ${exception.message}", 
-                                 Toast.LENGTH_SHORT).show()
-                }
-            )
+            result?.let { // Only process if result is not null
+                result.fold(
+                    onSuccess = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        // Navigate back to inventory
+                        parentFragmentManager.popBackStack()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(context, "Failed to delete spider: ${exception.message}", 
+                                    Toast.LENGTH_SHORT).show()
+                    }
+                )
+                // Clear the result after handling it
+                viewModel.clearDeleteResult()
+            }
+        }
+
+        viewModel.updateSpiderResult.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                result.fold(
+                    onSuccess = { updatedSpider ->
+                        Toast.makeText(context, "Spider updated successfully", Toast.LENGTH_SHORT).show()
+                        editSpiderDialog?.dismiss()
+                        // Update the current spider details
+                        spider = updatedSpider
+                        displaySpiderDetails()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+                    }
+                )
+                viewModel.clearUpdateSpiderResult()
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        editSpiderDialog?.dismiss()
+        editSpiderDialog = null
         _binding = null
+    }
+
+    private fun pickImage() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+        }
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Picture"),
+            PICK_IMAGE_REQUEST
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            selectedImageUri = data?.data
+            editSpiderDialog?.let { dialog ->
+                selectedImageUri?.let { uri ->
+                    val imageView = dialog.findViewById<ImageView>(R.id.edit_image_view)
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .into(imageView)
+                }
+            }
+        }
     }
 
     companion object {

@@ -25,11 +25,14 @@ class InventoryViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _addSpiderResult = MutableLiveData<Result<String>>()
-    val addSpiderResult: LiveData<Result<String>> = _addSpiderResult
+    private val _addSpiderResult = MutableLiveData<Result<String>?>()
+    val addSpiderResult: LiveData<Result<String>?> = _addSpiderResult
 
-    private val _deleteResult = MutableLiveData<Result<String>>()
-    val deleteResult: LiveData<Result<String>> = _deleteResult
+    private val _deleteResult = MutableLiveData<Result<String>?>()
+    val deleteResult: MutableLiveData<Result<String>?> = _deleteResult
+
+    private val _updateSpiderResult = MutableLiveData<Result<Spider>?>()
+    val updateSpiderResult: LiveData<Result<Spider>?> = _updateSpiderResult
 
     private val apiService: ApiService by lazy {
         Retrofit.Builder()
@@ -131,6 +134,10 @@ class InventoryViewModel : ViewModel() {
         }
     }
 
+    fun clearDeleteResult() {
+        _deleteResult.value = null
+    }
+
     fun deleteSpider(token: String, spiderId: String) {
         viewModelScope.launch {
             try {
@@ -146,5 +153,86 @@ class InventoryViewModel : ViewModel() {
                 _deleteResult.value = Result.failure(e)
             }
         }
+    }
+
+    fun clearAddSpiderResult() {
+        _addSpiderResult.value = null
+    }
+
+    fun updateSpider(
+        token: String,
+        spiderId: String,
+        name: String?,
+        health: String?,
+        size: String?,
+        value: Double?,
+        description: String?,
+        imageUri: Uri?,
+        context: Context,
+        originalSpider: Spider
+    ) {
+        viewModelScope.launch {
+            try {
+                // Check if any changes were made
+                if (name == originalSpider.spiderName &&
+                    health == originalSpider.spiderHealthStatus &&
+                    size == originalSpider.spiderSize &&
+                    value == originalSpider.spiderEstimatedMarketValue &&
+                    description == originalSpider.spiderDescription &&
+                    imageUri == null) {
+                    _updateSpiderResult.value = Result.failure(
+                        Exception("None of the information are changed. Edit unsuccessful.")
+                    )
+                    return@launch
+                }
+
+                // Create request bodies for changed fields only
+                val method = RequestBody.create("text/plain".toMediaTypeOrNull(), "PATCH")
+                val nameBody = name?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
+                val healthBody = health?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
+                val sizeBody = size?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
+                val valueBody = value?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it.toString()) }
+                val descBody = description?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
+
+                // Handle image if changed
+                var imagePart: MultipartBody.Part? = null
+                if (imageUri != null) {
+                    val imageFile = imageUri.let { uri ->
+                        val inputStream = context.contentResolver.openInputStream(uri)
+                        File(context.cacheDir, "upload_${System.currentTimeMillis()}.jpg").apply {
+                            outputStream().use { output ->
+                                inputStream?.copyTo(output)
+                            }
+                        }
+                    }
+                    imagePart = MultipartBody.Part.createFormData(
+                        "spiderImageRef",
+                        imageFile.name,
+                        RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+                    )
+                }
+
+                val updatedSpider = apiService.updateSpider(
+                    token,
+                    spiderId,
+                    method,
+                    nameBody,
+                    healthBody,
+                    sizeBody,
+                    valueBody,
+                    descBody,
+                    imagePart
+                )
+
+                _updateSpiderResult.value = Result.success(updatedSpider)
+                refreshSpiders(token)
+            } catch (e: Exception) {
+                _updateSpiderResult.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun clearUpdateSpiderResult() {
+        _updateSpiderResult.value = null
     }
 }

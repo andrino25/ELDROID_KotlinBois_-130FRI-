@@ -95,8 +95,8 @@
                     android:background="@drawable/spider_white_container_box"
                     android:fontFamily="@font/standard"
                     android:hint="Description"
-                    android:singleLine="true"
                     android:paddingHorizontal="@dimen/_15dp"
+                    android:singleLine="true"
                     android:textSize="@dimen/_14sp" />
 
                 <RelativeLayout

@@ -84,15 +84,19 @@ class InventoryFragment : Fragment() {
         }
 
         viewModel.addSpiderResult.observe(viewLifecycleOwner) { result ->
-            result.fold(
-                onSuccess = { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    addSpiderDialog?.dismiss()
-                },
-                onFailure = { exception ->
-                    Toast.makeText(context, "Failed to add spider: ${exception.message}", Toast.LENGTH_SHORT).show()
-                }
-            )
+            result?.let {  // Only process if result is not null
+                result.fold(
+                    onSuccess = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        addSpiderDialog?.dismiss()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(context, "Failed to add spider: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    }
+                )
+                // Clear the result after handling it
+                viewModel.clearAddSpiderResult()
+            }
         }
     }
 

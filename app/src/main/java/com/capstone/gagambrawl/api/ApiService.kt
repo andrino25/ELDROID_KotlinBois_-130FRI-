@@ -67,6 +67,20 @@ interface ApiService {
         @Part userProfilePicRef: MultipartBody.Part?
     ): User
 
+    @Multipart
+    @POST("api/api/spiders/{spiderId}")
+    suspend fun updateSpider(
+        @Header("Authorization") token: String,
+        @Path("spiderId") spiderId: String,
+        @Part("_method") method: RequestBody,
+        @Part("spiderName") spiderName: RequestBody?,
+        @Part("spiderHealthStatus") spiderHealthStatus: RequestBody?,
+        @Part("spiderSize") spiderSize: RequestBody?,
+        @Part("spiderEstimatedMarketValue") spiderEstimatedMarketValue: RequestBody?,
+        @Part("spiderDescription") spiderDescription: RequestBody?,
+        @Part spiderImageRef: MultipartBody.Part?
+    ): Spider
+
     data class DeleteResponse(
         val message: String
     )
