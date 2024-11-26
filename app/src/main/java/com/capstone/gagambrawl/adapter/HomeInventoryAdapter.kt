@@ -27,7 +27,15 @@ class HomeInventoryAdapter(
         val spider = spiders[position]
         holder.binding.apply {
             inventorySpiderName.text = spider.spiderName
+
             inventorySpiderStatus.text = spider.spiderHealthStatus
+            val statusColor = when (spider.spiderHealthStatus) {
+                "Healthy" -> root.context.getColor(R.color.status_healthy)
+                "Injured" -> root.context.getColor(R.color.status_injured)
+                "Unavailable" -> root.context.getColor(R.color.status_unavailable)
+                else -> root.context.getColor(R.color.gray)
+            }
+            inventorySpiderStatus.setTextColor(statusColor)
 
             Glide.with(inventoryImage.context)
                 .load(spider.spiderImageRef)

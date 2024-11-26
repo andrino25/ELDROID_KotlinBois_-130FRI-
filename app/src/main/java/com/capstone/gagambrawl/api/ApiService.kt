@@ -12,6 +12,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 interface ApiService {
     @GET("catalogs")
@@ -39,5 +40,11 @@ interface ApiService {
         @Part("spiderEstimatedMarketValue") spiderEstimatedMarketValue: RequestBody,
         @Part("spiderDescription") spiderDescription: RequestBody,
         @Part spiderImageRef: MultipartBody.Part
+    ): Spider
+
+    @GET("api/api/spiders/{spiderId}")
+    suspend fun getSpiderById(
+        @Header("Authorization") token: String,
+        @Path("spiderId") spiderId: String
     ): Spider
 } 

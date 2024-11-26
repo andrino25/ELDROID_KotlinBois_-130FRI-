@@ -9,88 +9,110 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.capstone.gagambrawl.R
-import com.capstone.gagambrawl.utils.Constants
+import com.capstone.gagambrawl.api.ApiService
+import com.capstone.gagambrawl.databinding.FragmentInventorySpiderDetailsBinding
+import com.capstone.gagambrawl.model.Spider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+import okhttp3.OkHttpClient
 
 class InventorySpiderDetailsFragment : Fragment() {
-    private var spiderId: String? = null
-    private var token: String? = null
+    private var _binding: FragmentInventorySpiderDetailsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var spider: Spider
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            spiderId = it.getString(Constants.BundleKeys.SPIDER_ID)
-            token = it.getString(Constants.BundleKeys.TOKEN)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentInventorySpiderDetailsBinding.inflate(inflater, container, false)
+        
+        // Get spider from arguments
+        arguments?.getParcelable<Spider>("spider")?.let {
+            spider = it
+            displaySpiderDetails()
+        }
+
+        setupClickListeners()
+        return binding.root
+    }
+
+    private fun displaySpiderDetails() {
+        binding.apply {
+            spiderName.text = spider.spiderName
+            spiderSize.text = "Size: ${spider.spiderSize}"
+            spiderStatus.text = "Status: ${spider.spiderHealthStatus}"
+            spiderDescription.text = spider.spiderDescription
+
+            // Set status color based on health status
+            val statusColor = when (spider.spiderHealthStatus) {
+                "Healthy" -> requireContext().getColor(R.color.status_healthy)
+                "Injured" -> requireContext().getColor(R.color.status_injured)
+                "Unavailable" -> requireContext().getColor(R.color.status_unavailable)
+                else -> requireContext().getColor(R.color.gray)
+            }
+            spiderStatus.setTextColor(statusColor)
+
+            // Load spider image
+            Glide.with(requireContext())
+                .load(spider.spiderImageRef)
+                .placeholder(R.drawable.spider_image_placeholder)
+                .error(R.drawable.spider_image_placeholder)
+                .into(spiderImage)
+
+            // Make all views visible since we have the data
+            spiderImage.visibility = View.VISIBLE
+            spiderName.visibility = View.VISIBLE
+            spiderSize.visibility = View.VISIBLE
+            spiderStatus.visibility = View.VISIBLE
+            spiderDescriptionLabel.visibility = View.VISIBLE
+            spiderDescription.visibility = View.VISIBLE
+            favoriteIcon.visibility = View.VISIBLE
+            
+            // Hide loading spinner
+            loadingSpinner.visibility = View.GONE
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_inventory_spider_details, container, false)
+    private fun setupClickListeners() {
+        binding.apply {
+            backButton.setOnClickListener {
+                parentFragmentManager.popBackStack()
+            }
 
-        // Initialize views
-        val backButton = view.findViewById<ImageView>(R.id.backButton)
-        val spiderImage = view.findViewById<ImageView>(R.id.spiderImage)
-        val spiderNameText = view.findViewById<TextView>(R.id.spiderName)
-        val spiderSizeText = view.findViewById<TextView>(R.id.spiderSize)
-        val spiderStatusText = view.findViewById<TextView>(R.id.spiderStatus)
-        val spiderDescriptionText = view.findViewById<TextView>(R.id.spiderDescription)
-        val editButton = view.findViewById<Button>(R.id.editDetailsButton)
-        val deleteButton = view.findViewById<Button>(R.id.deleteDetailsButton)
-        val favoriteIcon = view.findViewById<ImageView>(R.id.favoriteIcon)
+            editDetailsButton.setOnClickListener {
+                Toast.makeText(context, "Edit functionality coming soon", Toast.LENGTH_SHORT).show()
+            }
 
-        // Set values from arguments
-        arguments?.let { args ->
-            spiderNameText.text = args.getString("spiderName", "")
-            spiderSizeText.text = args.getString("spiderSize", "")
-            spiderStatusText.text = args.getString("spiderHealth", "")
-            spiderDescriptionText.text = args.getString("spiderDescription", "")
+            deleteDetailsButton.setOnClickListener {
+                Toast.makeText(context, "Delete functionality coming soon", Toast.LENGTH_SHORT).show()
+            }
 
-            // Load spider image
-            args.getString("spiderImage")?.let { imageUrl ->
-                Glide.with(requireContext())
-                    .load(imageUrl)
-                    .placeholder(R.drawable.spider_image_placeholder)
-                    .error(R.drawable.spider_image_placeholder)
-                    .into(spiderImage)
+            favoriteIcon.setOnClickListener {
+                Toast.makeText(context, "Favorite functionality coming soon", Toast.LENGTH_SHORT).show()
             }
         }
+    }
 
-        // Set click listeners
-        backButton.setOnClickListener {
-            // Go back to previous fragment
-            parentFragmentManager.popBackStack()
-        }
-
-        editButton.setOnClickListener {
-            // TODO: Implement edit functionality
-            Toast.makeText(context, "Edit functionality coming soon", Toast.LENGTH_SHORT).show()
-        }
-
-        deleteButton.setOnClickListener {
-            // TODO: Implement delete functionality
-            Toast.makeText(context, "Delete functionality coming soon", Toast.LENGTH_SHORT).show()
-        }
-
-        favoriteIcon.setOnClickListener {
-            // TODO: Implement favorite functionality
-            Toast.makeText(context, "Favorite functionality coming soon", Toast.LENGTH_SHORT).show()
-        }
-
-        return view
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(spiderId: String, token: String) =
-            InventorySpiderDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("spiderId", spiderId)
-                    putString("token", token)
-                }
+        fun newInstance(spider: Spider) = InventorySpiderDetailsFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable("spider", spider)
             }
+        }
     }
 }

@@ -20,6 +20,7 @@ class DashboardPage : AppCompatActivity() {
     private var userLastName: String? = null
     private var userEmail: String? = null
     private var userAddress: String? = null
+    private var currentFragmentId = R.id.nav_home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,27 +37,40 @@ class DashboardPage : AppCompatActivity() {
         loadFragment(HomeFragment())
 
         bottomNavigationView.setOnItemSelectedListener { item ->
+            // Prevent reloading the same fragment
+            if (item.itemId == currentFragmentId) {
+                return@setOnItemSelectedListener true
+            }
+
+            currentFragmentId = item.itemId
+
             when (item.itemId) {
                 R.id.nav_home -> {
-                    loadFragment(HomeFragment())
-                    true
-                }
-                R.id.nav_catalog -> {
-                    loadFragment(CatalogFragment())
-                    true
-                }
-                R.id.nav_inventory -> {
-                    // Create InventoryFragment with token
-                    val inventoryFragment = InventoryFragment().apply {
+                    loadFragment(HomeFragment().apply {
                         arguments = Bundle().apply {
                             putString("token", token)
                         }
-                    }
-                    loadFragment(inventoryFragment)
+                    })
+                    true
+                }
+                R.id.nav_catalog -> {
+                    loadFragment(CatalogFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("token", token)
+                        }
+                    })
+                    true
+                }
+                R.id.nav_inventory -> {
+                    loadFragment(InventoryFragment().apply {
+                        arguments = Bundle().apply {
+                            putString("token", token)
+                        }
+                    })
                     true
                 }
                 R.id.nav_profile -> {
-                    val profileFragment = ProfileFragment().apply {
+                    loadFragment(ProfileFragment().apply {
                         arguments = Bundle().apply {
                             putString("token", token)
                             putString("firstName", userFirstName)
@@ -65,8 +79,7 @@ class DashboardPage : AppCompatActivity() {
                             putString("address", userAddress)
                             putString("email", userEmail)
                         }
-                    }
-                    loadFragment(profileFragment)
+                    })
                     true
                 }
                 else -> false
@@ -75,9 +88,14 @@ class DashboardPage : AppCompatActivity() {
     }
 
     private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container, fragment)
-            .commit()
+        try {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
+        } catch (e: Exception) {
+            // Handle any potential exceptions
+            e.printStackTrace()
+        }
     }
 
     private fun fetchUserData() {
@@ -98,5 +116,17 @@ class DashboardPage : AppCompatActivity() {
             } catch (e: Exception) {
             }
         }
+    }
+
+    // Override back press to update currentFragmentId
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
+        when (currentFragment) {
+            is HomeFragment -> currentFragmentId = R.id.nav_home
+            is CatalogFragment -> currentFragmentId = R.id.nav_catalog
+            is InventoryFragment -> currentFragmentId = R.id.nav_inventory
+            is ProfileFragment -> currentFragmentId = R.id.nav_profile
+        }
+        super.onBackPressed()
     }
 }

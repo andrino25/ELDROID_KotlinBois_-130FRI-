@@ -29,7 +29,7 @@
             android:layout_below="@id/i_spider_image"
             android:fontFamily="@font/medium"
             android:text="@string/goliath_birdeater"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="@dimen/_14sp"
             android:layout_marginStart="@dimen/_10dp"/>

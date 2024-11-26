@@ -54,31 +54,23 @@
                     android:singleLine="true"
                     android:textSize="@dimen/_14sp" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/dialog_spider_health"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_50dp"
                     android:layout_marginHorizontal="@dimen/_10dp"
                     android:layout_marginTop="@dimen/_8dp"
                     android:background="@drawable/spider_white_container_box"
-                    android:fontFamily="@font/standard"
-                    android:hint="Health Status"
-                    android:paddingHorizontal="@dimen/_15dp"
-                    android:singleLine="true"
-                    android:textSize="@dimen/_14sp" />
+                    android:paddingHorizontal="@dimen/_15dp" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/dialog_spider_size"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_50dp"
                     android:layout_marginHorizontal="@dimen/_10dp"
                     android:layout_marginTop="@dimen/_8dp"
                     android:background="@drawable/spider_white_container_box"
-                    android:fontFamily="@font/standard"
-                    android:hint="Size"
-                    android:paddingHorizontal="@dimen/_15dp"
-                    android:singleLine="true"
-                    android:textSize="@dimen/_14sp" />
+                    android:paddingHorizontal="@dimen/_15dp" />
 
                 <EditText
                     android:id="@+id/dialog_spider_value"
