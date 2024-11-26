@@ -26,6 +26,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import android.widget.ArrayAdapter
+import com.capstone.gagambrawl.utils.SessionManager
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -83,15 +84,19 @@ class InventoryFragment : Fragment() {
         }
 
         viewModel.addSpiderResult.observe(viewLifecycleOwner) { result ->
-            result.fold(
-                onSuccess = { message ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                    addSpiderDialog?.dismiss()
-                },
-                onFailure = { exception ->
-                    Toast.makeText(context, "Failed to add spider: ${exception.message}", Toast.LENGTH_SHORT).show()
-                }
-            )
+            result?.let {  // Only process if result is not null
+                result.fold(
+                    onSuccess = { message ->
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        addSpiderDialog?.dismiss()
+                    },
+                    onFailure = { exception ->
+                        Toast.makeText(context, "Failed to add spider: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    }
+                )
+                // Clear the result after handling it
+                viewModel.clearAddSpiderResult()
+            }
         }
     }
 
@@ -193,5 +198,20 @@ class InventoryFragment : Fragment() {
             .replace(R.id.container, detailsFragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh spiders list when returning to fragment
+        val token = arguments?.getString("token") ?: 
+                    activity?.intent?.getStringExtra("token") ?: 
+                    SessionManager(requireContext()).fetchAuthToken() ?: ""
+        
+        if (!token.startsWith("Bearer ")) {
+            this.token = "Bearer $token"
+        }
+        
+        // Force refresh the spiders list
+        viewModel.refreshSpiders(token)
     }
 }

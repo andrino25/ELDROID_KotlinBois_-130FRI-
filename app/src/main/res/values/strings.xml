@@ -106,6 +106,9 @@
 
     <string name="featured_catalogs">Featured Catalogs</string>
     <string name="your_spiders">Your Spiders</string>
+    <string name="edit_spider">Edit Spider</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="edit">Edit</string>
 
     <!-- Spider Health Status Options -->
     <string-array name="health_status_array">

@@ -4,20 +4,17 @@
     android:layout_height="match_parent">
     
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_centerHorizontal="true"
+        android:layout_width="325dp"
+        android:layout_centerInParent="true"
         android:layout_height="wrap_content"
-        android:background="@color/maroon">
+        android:background="@color/maroon"
+        android:padding="@dimen/_16dp">
 
         <ImageButton
             android:id="@+id/i_close_btn"
             android:layout_width="@dimen/_24dp"
             android:layout_height="@dimen/_24dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
-            android:layout_marginBottom="@dimen/_10dp"
             android:background="@drawable/ic_close_btn_white" />
 
         <TextView
@@ -39,11 +36,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_15sp"
-            android:singleLine="true"
             android:fontFamily="@font/standard"
             android:layout_below="@+id/dialog_spider_txt"
             android:gravity="center"
-            android:layout_marginTop="@dimen/_8dp"
             android:text="@string/are_you_sure_you_want_to_logout"
             android:layout_centerHorizontal="true"
             android:textColor="@color/white"/>
@@ -56,7 +51,7 @@
             android:text="@string/logout"
             android:fontFamily="@font/medium"
             android:layout_below="@id/txt1"
-            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginTop="@dimen/_12dp"
             android:layout_marginHorizontal="@dimen/_30dp"
             android:textColor="@color/maroon"
             android:layout_marginBottom="@dimen/_30dp"

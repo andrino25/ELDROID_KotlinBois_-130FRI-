@@ -35,15 +35,26 @@
     <RelativeLayout
         android:id="@+id/imageContainer"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_below="@+id/headerContainer"
+        android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/_32dp">
         <ImageView
             android:id="@+id/userProfilePicRef"
             android:layout_height="@dimen/_150dp"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/_150dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/img_pfp"/>
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_profile_pic"
+            android:clipToOutline="true"/>
+
+        <ImageButton
+            android:id="@+id/editProfilePicButton"
+            android:layout_width="@dimen/_32dp"
+            android:layout_height="@dimen/_32dp"
+            android:layout_alignEnd="@id/userProfilePicRef"
+            android:layout_alignBottom="@id/userProfilePicRef"
+            android:src="@drawable/ic_edit"/>
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/userInfoContainer"

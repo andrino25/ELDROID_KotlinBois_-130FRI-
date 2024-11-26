@@ -77,10 +77,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderImage"
                     android:layout_marginStart="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_16dp"
                     android:fontFamily="@font/bold"
                     android:textColor="@android:color/black"
-                    android:textSize="@dimen/_35sp"
+                    android:textSize="@dimen/_32sp"
                     android:visibility="invisible"
                     tools:text="Spider Name" />
 
@@ -91,6 +90,7 @@
                     android:layout_alignTop="@id/spiderName"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_4dp"
                     android:src="@drawable/ic_star"
                     android:visibility="invisible" />
 
@@ -101,21 +101,34 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderName"
                     android:layout_marginStart="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_8dp"
                     android:fontFamily="@font/standard"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_15sp"
                     android:visibility="invisible"
                     tools:text="Size: Large" />
 
+                <!-- Spider Value -->
+                <TextView
+                    android:id="@+id/spiderValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/spiderSize"
+                    android:layout_marginStart="@dimen/_16dp"
+                    android:fontFamily="@font/standard"
+                    android:textColor="@android:color/black"
+                    android:layout_marginTop="@dimen/_n4dp"
+                    android:textSize="@dimen/_15sp"
+                    android:visibility="invisible"
+                    tools:text="Market Value: 50.00" />
+
                 <!-- Spider Status -->
                 <TextView
                     android:id="@+id/spiderStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/spiderSize"
+                    android:layout_below="@id/spiderValue"
                     android:layout_marginStart="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_8dp"
+                    android:layout_marginTop="@dimen/_n4dp"
                     android:fontFamily="@font/standard"
                     android:textColor="@color/green"
                     android:textSize="@dimen/_15sp"
@@ -129,7 +142,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderStatus"
                     android:layout_marginStart="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_16dp"
+                    android:layout_marginTop="@dimen/_4dp"
                     android:fontFamily="@font/medium"
                     android:text="@string/description"
                     android:textColor="@android:color/black"
@@ -142,11 +155,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/spiderDescriptionLabel"
                     android:layout_marginHorizontal="@dimen/_16dp"
-                    android:layout_marginTop="@dimen/_8dp"
                     android:fontFamily="@font/standard"
                     android:justificationMode="inter_word"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/_14sp"
+                    android:layout_marginTop="@dimen/_n4dp"
                     android:visibility="invisible"
                     tools:text="Spider description goes here" />
 

@@ -96,6 +96,7 @@
                     android:fontFamily="@font/standard"
                     android:hint="Description"
                     android:paddingHorizontal="@dimen/_15dp"
+                    android:singleLine="true"
                     android:textSize="@dimen/_14sp" />
 
                 <RelativeLayout

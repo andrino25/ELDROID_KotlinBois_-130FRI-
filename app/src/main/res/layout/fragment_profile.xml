@@ -43,8 +43,10 @@
                     android:id="@+id/profileImage"
                     android:layout_height="@dimen/_150dp"
                     android:layout_width="@dimen/_150dp"
-                    android:src="@drawable/img_pfp"
+                    android:src="@drawable/ic_default_profile"
                     android:scaleType="fitCenter"
+                    android:background="@drawable/bg_profile_pic"
+                    android:clipToOutline="true"
                     android:layout_centerHorizontal="true"/>
                 <TextView
                     android:id="@+id/profileName"
