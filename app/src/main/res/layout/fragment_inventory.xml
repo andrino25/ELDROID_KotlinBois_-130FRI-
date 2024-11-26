@@ -3,13 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.Dashboard.InventoryFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <TextView
             android:id="@+id/inventoryHeader"
@@ -27,20 +25,29 @@
 
         <ImageButton
             android:id="@+id/menuHeader"
-            android:layout_width="@dimen/_40dp"
-            android:layout_height="@dimen/_40dp"
+            android:layout_width="@dimen/_25dp"
+            android:layout_height="@dimen/_25dp"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="@dimen/_10dp"
-            android:layout_marginTop="@dimen/_10dp"
-            android:layout_marginEnd="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_20dp"
+            android:layout_marginEnd="@dimen/_15dp"
             android:layout_marginBottom="@dimen/_10dp"
             android:background="@drawable/ic_menu" />
+
+        <TextView
+            android:id="@+id/empty_inventory_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/inventory_is_empty_for_now"
+            android:fontFamily="@font/standard"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/_16sp" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/inventoryHeader">
-
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/spidersRecyclerView"

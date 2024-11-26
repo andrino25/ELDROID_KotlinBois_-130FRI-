@@ -34,6 +34,19 @@
                 android:textColor="@color/black"
                 android:layout_below="@id/app_name"/>
 
+            <TextView
+                android:id="@+id/showAllCatalog_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/see_more"
+                android:fontFamily="@font/standard"
+                android:textColor="@color/red"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/app_name"
+                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginEnd="@dimen/_20dp"
+                tools:ignore="TextContrastCheck" />
+
             <ProgressBar
                 android:id="@+id/home_loading_spinner"
                 android:layout_width="wrap_content"
@@ -60,15 +73,15 @@
                 android:textSize="@dimen/_16sp"
                 android:fontFamily="@font/medium"
                 android:layout_marginStart="@dimen/_20dp"
-                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_10dp"
                 android:textColor="@color/black"
                 android:layout_below="@id/home_catalog_recycler_view"/>
 
             <TextView
-                android:id="@+id/showAll_btn"
+                android:id="@+id/showAllInvetory_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_20dp"
+                android:layout_marginTop="@dimen/_10dp"
                 android:layout_marginEnd="@dimen/_20dp"
                 android:text="@string/show_all"
                 android:fontFamily="@font/standard"
@@ -76,6 +89,19 @@
                 android:layout_alignParentEnd="true"
                 android:layout_below="@id/home_catalog_recycler_view"
                 tools:ignore="TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/empty_inventory_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/h_inventory_txt"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_40dp"
+                android:text="@string/inventory_is_empty_for_now"
+                android:fontFamily="@font/standard"
+                android:textColor="@color/gray"
+                android:visibility="gone"
+                android:textSize="@dimen/_16sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/inventory_recycler_view"

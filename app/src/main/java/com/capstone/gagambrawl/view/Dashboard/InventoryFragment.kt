@@ -28,6 +28,7 @@ import com.google.android.material.imageview.ShapeableImageView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.capstone.gagambrawl.utils.SessionManager
 
 
@@ -39,6 +40,7 @@ class InventoryFragment : Fragment() {
     private val viewModel: InventoryViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
     private var isUserAction = false
+    private var loadingDialog: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,6 +117,12 @@ class InventoryFragment : Fragment() {
     private fun setupObservers() {
         // Observe filtered spiders
         viewModel.filteredSpiders.observe(viewLifecycleOwner) { spiders ->
+            // Show/hide empty state based on spiders list
+            view?.findViewById<TextView>(R.id.empty_inventory_text)?.visibility =
+                if (spiders.isEmpty()) View.VISIBLE else View.GONE
+            view?.findViewById<RecyclerView>(R.id.spidersRecyclerView)?.visibility = 
+                if (spiders.isEmpty()) View.GONE else View.VISIBLE
+            
             spiderAdapter.updateSpiders(spiders)
 
             // Handle target spider if present
@@ -132,6 +140,14 @@ class InventoryFragment : Fragment() {
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             // Handle loading state
+        }
+
+        viewModel.isAddingSpider.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showLoadingDialog()
+            } else {
+                loadingDialog?.dismiss()
+            }
         }
 
         // ... other observers ...
@@ -160,6 +176,8 @@ class InventoryFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        loadingDialog?.dismiss()
+        loadingDialog = null
         addSpiderDialog?.dismiss()
         addSpiderDialog = null
     }
@@ -253,6 +271,15 @@ class InventoryFragment : Fragment() {
                         .into(imageView)
                 }
             }
+        }
+    }
+
+    private fun showLoadingDialog() {
+        loadingDialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.pre_loader)
+            setCancelable(false)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            show()
         }
     }
 }

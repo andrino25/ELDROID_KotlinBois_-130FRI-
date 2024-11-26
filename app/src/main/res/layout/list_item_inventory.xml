@@ -6,12 +6,13 @@
 
     <RelativeLayout
         android:layout_width="@dimen/_170dp"
-        android:layout_height="@dimen/_150dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_4dp"
         android:layout_marginEnd="@dimen/_4dp"
         android:layout_marginBottom="@dimen/_4dp"
         android:layout_marginStart="@dimen/_4dp"
-        android:background="@drawable/spider_gray_container">
+        android:paddingBottom="@dimen/_8dp"
+        android:background="@drawable/bg_spider_item_home">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/i_spider_image"
@@ -23,7 +24,7 @@
             app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
             android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/spider_sample_img" />
+            android:src="@drawable/img_spider_placeholder" />
 
         <TextView
             android:id="@+id/i_spider_breed"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/i_spider_image"
             android:fontFamily="@font/medium"
-            android:text="@string/goliath_birdeater"
+            android:text="@string/spider_name"
             android:textColor="@color/black"
             android:textStyle="bold"
             android:textSize="@dimen/_14sp"
@@ -55,11 +56,10 @@
             android:layout_width="@dimen/_24dp"
             android:layout_height="@dimen/_24dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:layout_marginStart="@dimen/_15dp"
-            android:layout_marginTop="@dimen/_15dp"
             android:layout_marginEnd="@dimen/_15dp"
             android:layout_marginBottom="@dimen/_15dp"
+            android:layout_below="@+id/i_spider_image"
             android:background="@color/transparent"
             android:fontFamily="@font/standard"
             android:onClick="onToggleStar"

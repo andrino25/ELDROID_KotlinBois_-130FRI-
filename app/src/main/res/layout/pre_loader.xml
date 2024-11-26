@@ -29,10 +29,5 @@
             android:text="Loading Please wait..."
             android:layout_centerHorizontal="true"
             android:layout_below="@id/progressBar_pre_loader"/>
-
-
     </RelativeLayout>
-
-
-
 </androidx.cardview.widget.CardView>

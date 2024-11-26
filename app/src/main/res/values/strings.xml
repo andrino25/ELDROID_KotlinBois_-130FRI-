@@ -109,6 +109,9 @@
     <string name="edit_spider">Edit Spider</string>
     <string name="edit_image">Edit Image</string>
     <string name="edit">Edit</string>
+    <string name="see_more">See more</string>
+    <string name="inventory_is_empty_for_now">Inventory is empty for now.</string>
+    <string name="spider_name">Spider Name</string>
 
     <!-- Spider Health Status Options -->
     <string-array name="health_status_array">

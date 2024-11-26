@@ -15,7 +15,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/spider_image"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200dp"
+            android:layout_height="@dimen/_150dp"
             app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
             android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="fitXY"

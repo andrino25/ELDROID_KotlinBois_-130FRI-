@@ -73,12 +73,20 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        binding.showAllBtn.setOnClickListener {
+        binding.showAllInvetoryBtn.setOnClickListener {
             // Get the activity as DashboardPage
             val dashboardActivity = activity as? DashboardPage
             if (dashboardActivity != null) {
                 // Update bottom navigation and load inventory fragment using the activity's method
                 dashboardActivity.bottomNavigationView.selectedItemId = R.id.nav_inventory
+            }
+        }
+        binding.showAllCatalogBtn.setOnClickListener {
+            // Get the activity as DashboardPage
+            val dashboardActivity = activity as? DashboardPage
+            if (dashboardActivity != null) {
+                // Update bottom navigation and load inventory fragment using the activity's method
+                dashboardActivity.bottomNavigationView.selectedItemId = R.id.nav_catalog
             }
         }
     }
@@ -166,9 +174,17 @@ class HomeFragment : Fragment() {
     private fun setupObservers() {
         viewModel.spiders.observe(viewLifecycleOwner) { spiders ->
             spiders?.let {
-                // Only show first 4 spiders in home screen
-                val limitedSpiders = if (it.size > 4) it.take(4) else it
-                homeInventoryAdapter.updateSpiders(limitedSpiders)
+                // Show/hide empty state based on spiders list
+                if (it.isEmpty()) {
+                    binding.emptyInventoryText.visibility = View.VISIBLE
+                    binding.inventoryRecyclerView.visibility = View.GONE
+                } else {
+                    binding.emptyInventoryText.visibility = View.GONE
+                    binding.inventoryRecyclerView.visibility = View.VISIBLE
+                    // Only show first 4 spiders in home screen
+                    val limitedSpiders = if (it.size > 4) it.take(4) else it
+                    homeInventoryAdapter.updateSpiders(limitedSpiders)
+                }
             }
         }
 

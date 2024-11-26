@@ -2,24 +2,26 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/_6dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_gray">
+        android:background="@drawable/bg_spider_item_home">
 
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/inventory_image"
-            android:layout_width="@dimen/_60dp"
-            android:layout_height="@dimen/_60dp"
+            android:layout_width="@dimen/_45dp"
+            android:layout_height="@dimen/_45dp"
             android:layout_marginStart="@dimen/_10dp"
             android:layout_marginTop="@dimen/_10dp"
             android:layout_marginEnd="@dimen/_10dp"
             android:layout_marginBottom="@dimen/_10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/spider_sample_img" />
+            app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
+            android:src="@drawable/img_spider_placeholder" />
 
         <TextView
             android:id="@+id/inventory_spider_name"
@@ -27,20 +29,21 @@
             android:layout_height="wrap_content"
             android:text="@string/sample_text"
             android:fontFamily="@font/medium"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/_14sp"
             android:layout_toEndOf="@id/inventory_image"
-            android:layout_marginTop="@dimen/_18dp"/>
+            android:layout_marginTop="@dimen/_15dp"/>
 
         <TextView
             android:id="@+id/inventory_spider_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/active"
-            android:textSize="@dimen/_14sp"
+            android:textSize="@dimen/_12sp"
+            android:layout_marginTop="@dimen/_n4dp"
             android:layout_below="@id/inventory_spider_name"
             android:textColor="@color/green"
             android:fontFamily="@font/standard"
-            android:layout_toRightOf="@id/inventory_image"/>
+            android:layout_toEndOf="@id/inventory_image"/>
 
         <ImageView
             android:id="@+id/inventory_dots"
@@ -49,9 +52,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/_10dp"
-            android:src="@drawable/ic_three_dots"/>
-
+            app:tint="@color/maroon"
+            android:src="@drawable/ic_open"/>
     </RelativeLayout>
-
-
 </RelativeLayout>

@@ -61,13 +61,15 @@
                 android:padding="@dimen/_20dp">
 
                 <!-- Spider Image -->
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/spiderImage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_250dp"
                     android:layout_marginHorizontal="@dimen/_16dp"
                     android:layout_marginTop="@dimen/_16dp"
+                    app:shapeAppearanceOverlay="@style/SmallCircularImageViewStyle"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/img_spider_placeholder"
                     android:visibility="invisible" />
 
                 <!-- Spider Name and Favorite Icon -->

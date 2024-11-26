@@ -46,6 +46,15 @@ class InventoryViewModel : ViewModel() {
     private val _favoriteToggleResult = MutableLiveData<Result<Spider>?>()
     val favoriteToggleResult: LiveData<Result<Spider>?> = _favoriteToggleResult
 
+    private val _isAddingSpider = MutableLiveData<Boolean>()
+    val isAddingSpider: LiveData<Boolean> = _isAddingSpider
+
+    private val _isUpdatingSpider = MutableLiveData<Boolean>()
+    val isUpdatingSpider: LiveData<Boolean> = _isUpdatingSpider
+
+    private val _isDeletingSpider = MutableLiveData<Boolean>()
+    val isDeletingSpider: LiveData<Boolean> = _isDeletingSpider
+
     enum class FilterType {
         ALL,
         FAVORITES
@@ -117,6 +126,8 @@ class InventoryViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                _isAddingSpider.value = true  // Start loading
+
                 // Check if spider name and size combination already exists
                 val existingSpiders = _spiders.value ?: emptyList()
                 if (existingSpiders.any {
@@ -176,6 +187,8 @@ class InventoryViewModel : ViewModel() {
                 dialog?.dismiss()
             } catch (e: Exception) {
                 _addSpiderResult.value = Result.failure(e)
+            } finally {
+                _isAddingSpider.value = false  // End loading
             }
         }
     }
@@ -267,6 +280,8 @@ class InventoryViewModel : ViewModel() {
     fun deleteSpider(token: String, spiderId: String) {
         viewModelScope.launch {
             try {
+                _isDeletingSpider.value = true  // Start loading
+
                 val response = apiService.deleteSpider(token, spiderId)
                 _deleteResult.value = Result.success(response.message)
                 
@@ -277,6 +292,8 @@ class InventoryViewModel : ViewModel() {
                 refreshSpiders(token)
             } catch (e: Exception) {
                 _deleteResult.value = Result.failure(e)
+            } finally {
+                _isDeletingSpider.value = false  // End loading
             }
         }
     }
@@ -300,6 +317,8 @@ class InventoryViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                _isUpdatingSpider.value = true  // Start loading
+
                 // Check if any changes were made
                 if (name == originalSpider.spiderName &&
                     health == originalSpider.spiderHealthStatus &&
@@ -382,6 +401,8 @@ class InventoryViewModel : ViewModel() {
                 dialog?.dismiss()
             } catch (e: Exception) {
                 _updateSpiderResult.value = Result.failure(e)
+            } finally {
+                _isUpdatingSpider.value = false  // End loading
             }
         }
     }

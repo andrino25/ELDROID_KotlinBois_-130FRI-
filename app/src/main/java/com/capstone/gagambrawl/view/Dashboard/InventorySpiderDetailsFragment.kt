@@ -46,6 +46,7 @@ class InventorySpiderDetailsFragment : Fragment() {
     private var editSpiderDialog: Dialog? = null
     private val PICK_IMAGE_REQUEST = 1
     private var isUserAction = false
+    private var loadingDialog: Dialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -340,10 +341,37 @@ class InventorySpiderDetailsFragment : Fragment() {
                 viewModel.clearFavoriteToggleResult()
             }
         }
+
+        viewModel.isUpdatingSpider.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showLoadingDialog()
+            } else {
+                loadingDialog?.dismiss()
+            }
+        }
+
+        viewModel.isDeletingSpider.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showLoadingDialog()
+            } else {
+                loadingDialog?.dismiss()
+            }
+        }
+    }
+
+    private fun showLoadingDialog() {
+        loadingDialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.pre_loader)
+            setCancelable(false)
+            window?.setBackgroundDrawableResource(android.R.color.transparent)
+            show()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        loadingDialog?.dismiss()
+        loadingDialog = null
         editSpiderDialog?.dismiss()
         editSpiderDialog = null
         _binding = null
