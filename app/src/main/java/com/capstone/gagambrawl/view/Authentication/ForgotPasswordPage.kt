@@ -51,6 +51,10 @@ class ForgotPasswordPage : AppCompatActivity() {
 
         submitButton.setOnClickListener {
             val email = emailField.text.toString().trim()
+            if (email.matches(Regex("^[^@]+@[^@]+\\.com$"))) {
+            } else {
+                Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
+            }
             val newPassword = passwordField.text.toString().trim()
             val confirmPassword = confirmPasswordField.text.toString().trim()
 
@@ -65,6 +69,14 @@ class ForgotPasswordPage : AppCompatActivity() {
                 }
                 confirmPassword.isEmpty() -> {
                     confirmPasswordField.error = "Confirm password is required"
+                    return@setOnClickListener
+                }
+                newPassword.length < 6 -> {
+                    Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+                confirmPassword.length < 6 -> {
+                    Toast.makeText(this, "Confirm password must be at least 6 characters", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
                 newPassword != confirmPassword -> {

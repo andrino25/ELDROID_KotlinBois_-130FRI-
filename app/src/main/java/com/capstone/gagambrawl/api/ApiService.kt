@@ -10,7 +10,6 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.DELETE
@@ -21,7 +20,7 @@ interface ApiService {
 
     @GET("api/api/user")
     suspend fun getUserProfile(@Header("Authorization") token: String): User
-    
+
     @POST("api/api/user/edit")
     suspend fun updateUserProfile(
         @Header("Authorization") token: String,
@@ -40,7 +39,8 @@ interface ApiService {
         @Part("spiderSize") spiderSize: RequestBody,
         @Part("spiderEstimatedMarketValue") spiderEstimatedMarketValue: RequestBody,
         @Part("spiderDescription") spiderDescription: RequestBody,
-        @Part spiderImageRef: MultipartBody.Part
+        @Part spiderImageRef: MultipartBody.Part,
+        @Part("spiderIsFavorite") spiderIsFavorite: RequestBody
     ): Spider
 
     @GET("api/api/spiders/{spiderId}")
@@ -78,7 +78,8 @@ interface ApiService {
         @Part("spiderSize") spiderSize: RequestBody?,
         @Part("spiderEstimatedMarketValue") spiderEstimatedMarketValue: RequestBody?,
         @Part("spiderDescription") spiderDescription: RequestBody?,
-        @Part spiderImageRef: MultipartBody.Part?
+        @Part spiderImageRef: MultipartBody.Part?,
+        @Part("spiderIsFavorite") spiderIsFavorite: RequestBody?
     ): Spider
 
     data class DeleteResponse(

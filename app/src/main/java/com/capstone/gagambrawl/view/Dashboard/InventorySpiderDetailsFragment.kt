@@ -39,11 +39,13 @@ import android.content.Intent
 class InventorySpiderDetailsFragment : Fragment() {
     private var _binding: FragmentInventorySpiderDetailsBinding? = null
     private val binding get() = _binding!!
+    private var token: String = ""
     private lateinit var spider: Spider
     private val viewModel: InventoryViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
     private var editSpiderDialog: Dialog? = null
     private val PICK_IMAGE_REQUEST = 1
+    private var isUserAction = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +58,12 @@ class InventorySpiderDetailsFragment : Fragment() {
         arguments?.getParcelable<Spider>("spider")?.let {
             spider = it
             displaySpiderDetails()
+        }
+
+        token = arguments?.getString("token") ?:
+                activity?.intent?.getStringExtra("token") ?: ""
+        if (!token.startsWith("Bearer ")) {
+            token = "Bearer $token"
         }
 
         setupClickListeners()
@@ -98,6 +106,12 @@ class InventorySpiderDetailsFragment : Fragment() {
             
             // Hide loading spinner
             loadingSpinner.visibility = View.GONE
+
+            // Update favorite icon based on spider's favorite status
+            favoriteIcon.setImageResource(
+                if (spider.spiderIsFavorite == 1) R.drawable.ic_star_on
+                else R.drawable.ic_star_off
+            )
         }
     }
 
@@ -116,7 +130,14 @@ class InventorySpiderDetailsFragment : Fragment() {
             }
 
             favoriteIcon.setOnClickListener {
-                Toast.makeText(context, "Favorite functionality coming soon", Toast.LENGTH_SHORT).show()
+                isUserAction = true
+                viewModel.toggleFavorite(
+                    token = token,
+                    spiderId = spider.spiderId,
+                    isFavorite = spider.spiderIsFavorite,
+                    spider = spider,
+                    context = requireContext()
+                )
             }
         }
     }
@@ -138,7 +159,7 @@ class InventorySpiderDetailsFragment : Fragment() {
                 token = "Bearer $token"
             }
             
-            viewModel.deleteSpider(token, spider.spiderId.toString())
+            viewModel.deleteSpider(token, spider.spiderId)
             dialog.dismiss()
         }
         
@@ -196,7 +217,8 @@ class InventorySpiderDetailsFragment : Fragment() {
                     description,
                     selectedImageUri,
                     requireContext(),
-                    spider
+                    spider,
+                    dialog = editSpiderDialog
                 )
             }
 
@@ -256,21 +278,66 @@ class InventorySpiderDetailsFragment : Fragment() {
             }
         }
 
+        setupObservers()
+    }
+
+    private fun setupObservers() {
         viewModel.updateSpiderResult.observe(viewLifecycleOwner) { result ->
             result?.let {
-                result.fold(
-                    onSuccess = { updatedSpider ->
-                        Toast.makeText(context, "Spider updated successfully", Toast.LENGTH_SHORT).show()
-                        editSpiderDialog?.dismiss()
-                        // Update the current spider details
+                if (isUserAction) {
+                    result.fold(
+                        onSuccess = { updatedSpider ->
+                            Toast.makeText(context, "Spider updated successfully", Toast.LENGTH_SHORT).show()
+                            editSpiderDialog?.dismiss()
+                            spider = updatedSpider
+                            displaySpiderDetails()
+                        },
+                        onFailure = { exception ->
+                            Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    result.onSuccess { updatedSpider ->
                         spider = updatedSpider
                         displaySpiderDetails()
-                    },
-                    onFailure = { exception ->
-                        Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
                     }
-                )
+                }
+                isUserAction = false
                 viewModel.clearUpdateSpiderResult()
+            }
+        }
+
+        viewModel.favoriteToggleResult.observe(viewLifecycleOwner) { result ->
+            result?.let {
+                if (isUserAction) {
+                    result.fold(
+                        onSuccess = { updatedSpider ->
+                            spider = updatedSpider
+                            binding.favoriteIcon.setImageResource(
+                                if (updatedSpider.spiderIsFavorite == 1) R.drawable.ic_star_on
+                                else R.drawable.ic_star_off
+                            )
+                            val message = if (updatedSpider.spiderIsFavorite == 1) 
+                                "Added to favorites" 
+                            else 
+                                "Removed from favorites"
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        },
+                        onFailure = { exception ->
+                            Toast.makeText(context, "Failed to update favorite status", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                } else {
+                    result.onSuccess { updatedSpider ->
+                        spider = updatedSpider
+                        binding.favoriteIcon.setImageResource(
+                            if (updatedSpider.spiderIsFavorite == 1) R.drawable.ic_star_on
+                            else R.drawable.ic_star_off
+                        )
+                    }
+                }
+                isUserAction = false
+                viewModel.clearFavoriteToggleResult()
             }
         }
     }

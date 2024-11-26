@@ -44,6 +44,10 @@ class RegisterPage : AppCompatActivity() {
         // Handle register button click
         registerButton.setOnClickListener {
             val email = emailField.text.toString().trim()
+            if (email.matches(Regex("^[^@]+@[^@]+\\.com$"))) {
+            } else {
+                Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
+            }
             val password = passwordField.text.toString().trim()
             val confirmPassword = confirmPasswordField.text.toString().trim()
 

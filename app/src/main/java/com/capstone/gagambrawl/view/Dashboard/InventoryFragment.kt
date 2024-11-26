@@ -5,12 +5,14 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Spinner
 import android.widget.Toast
@@ -28,8 +30,6 @@ import com.bumptech.glide.Glide
 import android.widget.ArrayAdapter
 import com.capstone.gagambrawl.utils.SessionManager
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class InventoryFragment : Fragment() {
     private var token: String = ""
@@ -38,6 +38,7 @@ class InventoryFragment : Fragment() {
     private var addSpiderDialog: Dialog? = null
     private val viewModel: InventoryViewModel by activityViewModels()
     private var selectedImageUri: Uri? = null
+    private var isUserAction = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +47,7 @@ class InventoryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_inventory, container, false)
 
-        // Initialize token from arguments or intent
+        // Initialize token
         token = arguments?.getString("token") ?:
                 activity?.intent?.getStringExtra("token") ?: ""
         if (!token.startsWith("Bearer ")) {
@@ -56,17 +57,54 @@ class InventoryFragment : Fragment() {
         // Setup RecyclerView
         recyclerView = view.findViewById(R.id.spidersRecyclerView)
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-        spiderAdapter = SpiderAdapter(emptyList()) { spider ->
-            showSpiderDetails(spider)
-        }
+        spiderAdapter = SpiderAdapter(
+            emptyList(),
+            onSpiderClick = { spider -> showSpiderDetails(spider) },
+            onFavoriteClick = { spider -> 
+                isUserAction = true
+                viewModel.toggleFavorite(
+                    token = token,
+                    spiderId = spider.spiderId,
+                    isFavorite = spider.spiderIsFavorite,
+                    spider = spider,
+                    context = requireContext()
+                )
+            }
+        )
         recyclerView.adapter = spiderAdapter
 
-        // Add Spider Button
+        // Setup menu button
+        view.findViewById<ImageButton>(R.id.menuHeader).setOnClickListener { button ->
+            showFilterMenu(button)
+        }
+
+        // Setup add button
         view.findViewById<ShapeableImageView>(R.id.addBtn).setOnClickListener {
             showAddSpiderDialog()
         }
 
         return view
+    }
+
+    private fun showFilterMenu(view: View) {
+        PopupMenu(requireContext(), view).apply {
+            menuInflater.inflate(R.menu.filter_menu, menu)
+
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.filter_all -> {
+                        viewModel.setFilter(InventoryViewModel.FilterType.ALL)
+                        true
+                    }
+                    R.id.filter_favorites -> {
+                        viewModel.setFilter(InventoryViewModel.FilterType.FAVORITES)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            show()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,61 +113,125 @@ class InventoryFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.spiders.observe(viewLifecycleOwner) { spiders ->
-            spiderAdapter.updateSpiders(spiders ?: emptyList())
+        // Observe filtered spiders
+        viewModel.filteredSpiders.observe(viewLifecycleOwner) { spiders ->
+            spiderAdapter.updateSpiders(spiders)
+
+            // Handle target spider if present
+            val targetSpiderName = arguments?.getString("target_spider_name")
+            if (!targetSpiderName.isNullOrEmpty()) {
+                spiders.find { it.spiderName == targetSpiderName }?.let { spider ->
+                    view?.postDelayed({
+                        showSpiderDetails(spider)
+                        arguments?.remove("target_spider_name")
+                        arguments?.remove("notification_action")
+                    }, 300)
+                }
+            }
         }
 
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             // Handle loading state
         }
 
-        viewModel.addSpiderResult.observe(viewLifecycleOwner) { result ->
-            result?.let {  // Only process if result is not null
-                result.fold(
-                    onSuccess = { message ->
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        addSpiderDialog?.dismiss()
-                    },
-                    onFailure = { exception ->
-                        Toast.makeText(context, "Failed to add spider: ${exception.message}", Toast.LENGTH_SHORT).show()
-                    }
-                )
-                // Clear the result after handling it
-                viewModel.clearAddSpiderResult()
-            }
+        // ... other observers ...
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val token = arguments?.getString("token") ?:
+                    activity?.intent?.getStringExtra("token") ?:
+                    SessionManager(requireContext()).fetchAuthToken() ?: ""
+
+        if (!token.startsWith("Bearer ")) {
+            this.token = "Bearer $token"
         }
+
+        viewModel.refreshSpiders(token)
+    }
+
+    private fun showSpiderDetails(spider: Spider) {
+        val detailsFragment = InventorySpiderDetailsFragment.newInstance(spider)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.container, detailsFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        addSpiderDialog?.dismiss()
+        addSpiderDialog = null
     }
 
     private fun showAddSpiderDialog() {
-        Dialog(requireContext()).apply {
+        addSpiderDialog = Dialog(requireContext()).apply {
             setContentView(R.layout.dialog_add_spider)
 
-            // Setup spinners
-            setupSpinners(this)
+            val selectImageBtn = findViewById<ImageView>(R.id.add_image_view)
+            val healthSpinner = findViewById<Spinner>(R.id.dialog_spider_health)
+            val sizeSpinner = findViewById<Spinner>(R.id.dialog_spider_size)
 
             findViewById<ImageButton>(R.id.i_close_btn).setOnClickListener {
                 dismiss()
             }
 
-            val imageContainer = findViewById<RelativeLayout>(R.id.dialog_spider_desc)
-            val addButton = findViewById<Button>(R.id.dialog_add_spiderBtn)
-
-            imageContainer.setOnClickListener {
-                pickImage()
+            // Setup spinners
+            ArrayAdapter.createFromResource(
+                context,
+                R.array.health_status_array,
+                android.R.layout.simple_spinner_item
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                healthSpinner.adapter = adapter
             }
 
-            addButton.setOnClickListener {
+            ArrayAdapter.createFromResource(
+                context,
+                R.array.size_array,
+                android.R.layout.simple_spinner_item
+            ).also { adapter ->
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                sizeSpinner.adapter = adapter
+            }
+
+            // Image selection
+            selectImageBtn.setOnClickListener {
+                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/*"
+                }
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select Picture"),
+                    PICK_IMAGE_REQUEST
+                )
+            }
+
+            // Add spider button
+            findViewById<Button>(R.id.dialog_add_spiderBtn).setOnClickListener {
                 val name = findViewById<EditText>(R.id.dialog_spider_name).text.toString()
-                val health = findViewById<Spinner>(R.id.dialog_spider_health).selectedItem.toString()
-                val size = findViewById<Spinner>(R.id.dialog_spider_size).selectedItem.toString()
+                val health = healthSpinner.selectedItem.toString()
+                val size = sizeSpinner.selectedItem.toString()
                 val value = findViewById<EditText>(R.id.dialog_spider_value).text.toString().toDoubleOrNull() ?: 0.0
                 val description = findViewById<EditText>(R.id.dialog_spider_description).text.toString()
 
-                if (name.isNotBlank() && description.isNotBlank() && value > 0 && selectedImageUri != null) {
-                    viewModel.addSpider(token, name, health, size, value, description, selectedImageUri!!, requireContext())
-                } else {
-                    Toast.makeText(context, getString(R.string.error_all_fields_required), Toast.LENGTH_SHORT).show()
+                if (name.isBlank() || selectedImageUri == null) {
+                    Toast.makeText(context, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 }
+
+                viewModel.addSpider(
+                    token = token,
+                    name = name,
+                    health = health,
+                    size = size,
+                    value = value,
+                    description = description,
+                    imageUri = selectedImageUri!!,
+                    context = requireContext(),
+                    spiderIsFavorite = 0,
+                    dialog = addSpiderDialog
+
+                )
             }
 
             show()
@@ -137,42 +239,11 @@ class InventoryFragment : Fragment() {
         }
     }
 
-    private fun setupSpinners(dialog: Dialog) {
-        val healthSpinner = dialog.findViewById<Spinner>(R.id.dialog_spider_health)
-        val sizeSpinner = dialog.findViewById<Spinner>(R.id.dialog_spider_size)
-
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.health_status_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            healthSpinner.adapter = adapter
-        }
-
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.size_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            sizeSpinner.adapter = adapter
-        }
-    }
-
-    private fun pickImage() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-            type = "image/*"
-        }
-        startActivityForResult(
-            Intent.createChooser(intent, "Select Picture"),
-            1001
-        )
-    }
+    private val PICK_IMAGE_REQUEST = 1
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1001 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
             selectedImageUri = data?.data
             addSpiderDialog?.let { dialog ->
                 selectedImageUri?.let { uri ->
@@ -183,35 +254,5 @@ class InventoryFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        addSpiderDialog?.dismiss()
-        addSpiderDialog = null
-    }
-
-    private fun showSpiderDetails(spider: Spider) {
-        val detailsFragment = InventorySpiderDetailsFragment.newInstance(spider)
-
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.container, detailsFragment)
-            .addToBackStack(null)
-            .commit()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Refresh spiders list when returning to fragment
-        val token = arguments?.getString("token") ?: 
-                    activity?.intent?.getStringExtra("token") ?: 
-                    SessionManager(requireContext()).fetchAuthToken() ?: ""
-        
-        if (!token.startsWith("Bearer ")) {
-            this.token = "Bearer $token"
-        }
-        
-        // Force refresh the spiders list
-        viewModel.refreshSpiders(token)
     }
 }
