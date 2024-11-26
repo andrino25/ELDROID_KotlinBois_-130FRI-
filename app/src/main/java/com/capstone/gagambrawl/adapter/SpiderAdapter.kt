@@ -13,7 +13,8 @@ import com.google.android.material.imageview.ShapeableImageView
 
 class SpiderAdapter(
     private var spiders: List<Spider>,
-    private val onSpiderClick: (Spider) -> Unit
+    private val onSpiderClick: (Spider) -> Unit,
+    private val onFavoriteClick: (Spider) -> Unit
 ) : RecyclerView.Adapter<SpiderAdapter.SpiderViewHolder>() {
 
     // Add companion object with shared color logic
@@ -43,7 +44,7 @@ class SpiderAdapter(
 
     override fun onBindViewHolder(holder: SpiderViewHolder, position: Int) {
         val spider = spiders[position]
-        
+
         holder.spiderBreed.text = spider.spiderName
         holder.spiderStatus.text = spider.spiderHealthStatus
 
@@ -63,14 +64,21 @@ class SpiderAdapter(
             .error(R.drawable.spider_sample_img)
             .into(holder.spiderImage)
 
+        // Update star button image based on favorite status
+        holder.starButton.setImageResource(
+            if (spider.spiderIsFavorite == 1) {
+                R.drawable.ic_star_on}
+            else {R.drawable.ic_star_off}
+        )
+
+        // Set click listener for star button
+        holder.starButton.setOnClickListener {
+            onFavoriteClick(spider)
+        }
+
         // Set click listener for the whole item
         holder.itemView.setOnClickListener {
             onSpiderClick(spider)
-        }
-
-        // Optional: Set click listener for star button
-        holder.starButton.setOnClickListener {
-            // TODO: Implement favorite functionality
         }
     }
 

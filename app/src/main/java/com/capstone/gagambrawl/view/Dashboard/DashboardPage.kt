@@ -1,13 +1,22 @@
 package com.capstone.gagambrawl.view.Dashboard
 
+import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.capstone.gagambrawl.R
 import com.capstone.gagambrawl.api.ApiService
 import com.capstone.gagambrawl.utils.SessionManager
 import com.capstone.gagambrawl.view.Authentication.LoginPage
+import com.capstone.gagambrawl.viewmodel.InventoryViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +24,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+private const val NOTIFICATION_PERMISSION_CODE = 1001
 class DashboardPage : AppCompatActivity() {
     lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var token: String
@@ -26,25 +36,41 @@ class DashboardPage : AppCompatActivity() {
     private var userProfilePicRef: String? = null
     private var currentFragmentId = R.id.nav_home
     private lateinit var sessionManager: SessionManager
+    private val viewModel: InventoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard_page)
 
         bottomNavigationView = findViewById(R.id.bottom_navigation)
-
         sessionManager = SessionManager(this)
-        
+
         // Get token from session manager if not provided in intent
         token = intent.getStringExtra("token") ?: sessionManager.fetchAuthToken() ?: ""
 
         fetchUserData()
 
-        // Pass token to initial fragment
-        loadFragment(HomeFragment())
+        // Handle notification navigation
+        if (intent.getBooleanExtra("open_inventory", false)) {
+            val targetSpiderName = intent.getStringExtra("target_spider_name")
+            val notificationAction = intent.getStringExtra("notification_action")
+            
+            // Navigate to inventory with the target spider info
+            loadFragment(InventoryFragment().apply {
+                arguments = Bundle().apply {
+                    putString("token", token)
+                    putString("target_spider_name", targetSpiderName)
+                    putString("notification_action", notificationAction)
+                }
+            })
+            bottomNavigationView.selectedItemId = R.id.nav_inventory
+        } else {
+            // Default to home
+            loadFragment(HomeFragment())
+        }
 
+        // Setup bottom navigation
         bottomNavigationView.setOnItemSelectedListener { item ->
-            // Prevent reloading the same fragment
             if (item.itemId == currentFragmentId) {
                 return@setOnItemSelectedListener true
             }
@@ -95,13 +121,61 @@ class DashboardPage : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        checkNotificationPermission()
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissions(
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    NOTIFICATION_PERMISSION_CODE
+                )
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == NOTIFICATION_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Notification permission granted.", Toast.LENGTH_SHORT).show()
+            } else {
+                showPermissionDeniedDialog()
+            }
+        }
+    }
+
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Notification Permission Needed")
+            .setMessage("Please allow notifications to stay updated with important alerts.")
+            .setPositiveButton("Grant Permission") { _, _ ->
+                checkNotificationPermission()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
     private fun loadFragment(fragment: Fragment) {
         try {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
                 .commit()
         } catch (e: Exception) {
-            // Handle any potential exceptions
             e.printStackTrace()
         }
     }
@@ -127,7 +201,6 @@ class DashboardPage : AppCompatActivity() {
         }
     }
 
-    // Override back press to update currentFragmentId
     override fun onBackPressed() {
         val currentFragment = supportFragmentManager.findFragmentById(R.id.container)
         when (currentFragment) {
@@ -147,4 +220,14 @@ class DashboardPage : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    private fun navigateToInventory() {
+        bottomNavigationView.selectedItemId = R.id.nav_inventory
+        loadFragment(InventoryFragment().apply {
+            arguments = Bundle().apply {
+                putString("token", token)
+            }
+        })
+    }
 }
+

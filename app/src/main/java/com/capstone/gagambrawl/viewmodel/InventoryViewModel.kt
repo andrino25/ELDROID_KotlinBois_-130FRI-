@@ -1,13 +1,16 @@
 package com.capstone.gagambrawl.viewmodel
 
+import android.app.Dialog
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.capstone.gagambrawl.api.ApiService
 import com.capstone.gagambrawl.model.Spider
+import com.capstone.gagambrawl.utils.NotificationHelper
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -22,6 +25,12 @@ class InventoryViewModel : ViewModel() {
     private val _spiders = MutableLiveData<List<Spider>>()
     val spiders: LiveData<List<Spider>> = _spiders
 
+    private val _currentFilter = MutableLiveData<FilterType>(FilterType.ALL)
+    val currentFilter: LiveData<FilterType> = _currentFilter
+
+    private val _filteredSpiders = MutableLiveData<List<Spider>>()
+    val filteredSpiders: LiveData<List<Spider>> = _filteredSpiders
+
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
@@ -33,6 +42,29 @@ class InventoryViewModel : ViewModel() {
 
     private val _updateSpiderResult = MutableLiveData<Result<Spider>?>()
     val updateSpiderResult: LiveData<Result<Spider>?> = _updateSpiderResult
+
+    private val _favoriteToggleResult = MutableLiveData<Result<Spider>?>()
+    val favoriteToggleResult: LiveData<Result<Spider>?> = _favoriteToggleResult
+
+    enum class FilterType {
+        ALL,
+        FAVORITES
+    }
+
+    fun setFilter(filterType: FilterType) {
+        _currentFilter.value = filterType
+        applyFilter()
+    }
+
+    private fun applyFilter() {
+        val currentSpiders = _spiders.value ?: emptyList()
+        val filtered = when (_currentFilter.value) {
+            FilterType.ALL -> currentSpiders
+            FilterType.FAVORITES -> currentSpiders.filter { it.spiderIsFavorite == 1 }
+            else -> currentSpiders
+        }
+        _filteredSpiders.value = filtered
+    }
 
     private val apiService: ApiService by lazy {
         Retrofit.Builder()
@@ -48,19 +80,13 @@ class InventoryViewModel : ViewModel() {
     }
 
     fun loadSpiders(token: String) {
-        if (_spiders.value != null && _spiders.value?.isNotEmpty() == true) {
-            return
-        }
-
-        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val spiderList = apiService.getSpiders(token)
                 _spiders.value = spiderList
+                applyFilter() // Apply current filter to new data
             } catch (e: Exception) {
                 _spiders.value = emptyList()
-            } finally {
-                _isLoading.value = false
             }
         }
     }
@@ -70,16 +96,88 @@ class InventoryViewModel : ViewModel() {
             try {
                 val spiderList = apiService.getSpiders(token)
                 _spiders.value = spiderList
+                applyFilter() // Apply current filter to refreshed data
             } catch (e: Exception) {
                 // Keep existing data on refresh failure
             }
         }
     }
 
-    fun addSpider(spider: Spider) {
-        val currentList = _spiders.value?.toMutableList() ?: mutableListOf()
-        currentList.add(spider)
-        _spiders.value = currentList
+    fun addSpider(
+        token: String,
+        name: String,
+        health: String,
+        size: String,
+        value: Double,
+        description: String,
+        imageUri: Uri,
+        context: Context,
+        spiderIsFavorite: Int = 0,
+        dialog: Dialog? = null
+    ) {
+        viewModelScope.launch {
+            try {
+                // Check if spider name and size combination already exists
+                val existingSpiders = _spiders.value ?: emptyList()
+                if (existingSpiders.any {
+                    it.spiderName.lowercase() == name.lowercase() &&
+                    it.spiderSize.lowercase() == size.lowercase()
+                }) {
+                    _addSpiderResult.value = Result.failure(Exception("A spider with this name and size already exists"))
+                    Toast.makeText(context, "This spider already exists", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                // Create image file from URI
+                val imageFile = imageUri.let { uri ->
+                    val inputStream = context.contentResolver.openInputStream(uri)
+                    File(context.cacheDir, "upload_${System.currentTimeMillis()}.jpg").apply {
+                        outputStream().use { output ->
+                            inputStream?.copyTo(output)
+                        }
+                    }
+                }
+
+                // Create request bodies
+                val namePart = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
+                val healthPart = RequestBody.create("text/plain".toMediaTypeOrNull(), health)
+                val sizePart = RequestBody.create("text/plain".toMediaTypeOrNull(), size)
+                val valuePart = RequestBody.create("text/plain".toMediaTypeOrNull(), value.toString())
+                val descriptionPart = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
+                val isFavoritePart = RequestBody.create("text/plain".toMediaTypeOrNull(), spiderIsFavorite.toString())
+                val imagePart = MultipartBody.Part.createFormData(
+                    "spiderImageRef",
+                    imageFile.name,
+                    RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+                )
+
+                // Make API call only if name doesn't exist
+                val response = apiService.addSpider(
+                    token,
+                    namePart,
+                    healthPart,
+                    sizePart,
+                    valuePart,
+                    descriptionPart,
+                    imagePart,
+                    isFavoritePart
+                )
+
+                // Show notification
+                NotificationHelper(context).showSpiderNotification(
+                    spiderName = name,
+                    action = NotificationHelper.SpiderAction.ADD,
+                    spiderId = response.spiderId,
+                    token = token
+                )
+
+                refreshSpiders(token)
+                _addSpiderResult.value = Result.success("Spider added successfully")
+                dialog?.dismiss()
+            } catch (e: Exception) {
+                _addSpiderResult.value = Result.failure(e)
+            }
+        }
     }
 
     fun clearSpiders() {
@@ -94,10 +192,23 @@ class InventoryViewModel : ViewModel() {
         value: Double,
         description: String,
         imageUri: Uri,
-        context: Context
+        context: Context,
+        spiderIsFavorite: Int = 0
     ) {
         viewModelScope.launch {
             try {
+                // Check if spider name already exists
+                val existingSpiders = _spiders.value ?: emptyList()
+                if (existingSpiders.any {
+                        it.spiderName.toLowerCase().equals(name.toLowerCase(), ignoreCase = true) &&
+                                it.spiderSize.toLowerCase().equals(size.toLowerCase(), ignoreCase = true)
+                    }) {
+                    _addSpiderResult.value = Result.failure(Exception("A spider with this name and size already exists"))
+                    Toast.makeText(context, "This spider already exists", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+
                 // Create image file from URI
                 val imageFile = imageUri.let { uri ->
                     val inputStream = context.contentResolver.openInputStream(uri)
@@ -108,22 +219,37 @@ class InventoryViewModel : ViewModel() {
                     }
                 }
 
-                // Create multipart request
+                // Create request bodies
+                val namePart = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
+                val healthPart = RequestBody.create("text/plain".toMediaTypeOrNull(), health)
+                val sizePart = RequestBody.create("text/plain".toMediaTypeOrNull(), size)
+                val valuePart = RequestBody.create("text/plain".toMediaTypeOrNull(), value.toString())
+                val descriptionPart = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
+                val isFavoritePart = RequestBody.create("text/plain".toMediaTypeOrNull(), spiderIsFavorite.toString())
                 val imagePart = MultipartBody.Part.createFormData(
                     "spiderImageRef",
                     imageFile.name,
                     RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
                 )
 
-                // Add spider
-                apiService.addSpider(
+                // Make API call only if name doesn't exist
+                val response = apiService.addSpider(
                     token,
-                    RequestBody.create("text/plain".toMediaTypeOrNull(), name),
-                    RequestBody.create("text/plain".toMediaTypeOrNull(), health),
-                    RequestBody.create("text/plain".toMediaTypeOrNull(), size),
-                    RequestBody.create("text/plain".toMediaTypeOrNull(), value.toString()),
-                    RequestBody.create("text/plain".toMediaTypeOrNull(), description),
-                    imagePart
+                    namePart,
+                    healthPart,
+                    sizePart,
+                    valuePart,
+                    descriptionPart,
+                    imagePart,
+                    isFavoritePart
+                )
+
+                // Show notification
+                NotificationHelper(context).showSpiderNotification(
+                    spiderName = name,
+                    action = NotificationHelper.SpiderAction.ADD,
+                    spiderId = response.spiderId,
+                    token = token
                 )
 
                 refreshSpiders(token)
@@ -169,7 +295,8 @@ class InventoryViewModel : ViewModel() {
         description: String?,
         imageUri: Uri?,
         context: Context,
-        originalSpider: Spider
+        originalSpider: Spider,
+        dialog: Dialog? = null
     ) {
         viewModelScope.launch {
             try {
@@ -186,6 +313,22 @@ class InventoryViewModel : ViewModel() {
                     return@launch
                 }
 
+                // Check for duplicate name and size combination
+                if (name != null && size != null) {
+                    val existingSpiders = _spiders.value ?: emptyList()
+                    val hasDuplicate = existingSpiders.any {
+                        it.spiderId != spiderId && // Exclude current spider
+                        it.spiderName.lowercase() == name.lowercase() &&
+                        it.spiderSize.lowercase() == size.lowercase()
+                    }
+                    
+                    if (hasDuplicate) {
+                        _updateSpiderResult.value = Result.failure(Exception("A spider with this name and size already exists"))
+                        Toast.makeText(context, "This spider already exists", Toast.LENGTH_SHORT).show()
+                        return@launch
+                    }
+                }
+
                 // Create request bodies for changed fields only
                 val method = RequestBody.create("text/plain".toMediaTypeOrNull(), "PATCH")
                 val nameBody = name?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
@@ -193,6 +336,7 @@ class InventoryViewModel : ViewModel() {
                 val sizeBody = size?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
                 val valueBody = value?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it.toString()) }
                 val descBody = description?.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
+                val isFavoriteBody = RequestBody.create("text/plain".toMediaTypeOrNull(), originalSpider.spiderIsFavorite.toString())
 
                 // Handle image if changed
                 var imagePart: MultipartBody.Part? = null
@@ -208,7 +352,7 @@ class InventoryViewModel : ViewModel() {
                     imagePart = MultipartBody.Part.createFormData(
                         "spiderImageRef",
                         imageFile.name,
-                        RequestBody.create("image/*".toMediaTypeOrNull(), imageFile)
+                        RequestBody.create("image/jpeg".toMediaTypeOrNull(), imageFile)
                     )
                 }
 
@@ -221,11 +365,21 @@ class InventoryViewModel : ViewModel() {
                     sizeBody,
                     valueBody,
                     descBody,
-                    imagePart
+                    imagePart,
+                    isFavoriteBody
+                )
+
+                // Show notification
+                NotificationHelper(context).showSpiderNotification(
+                    spiderName = name ?: originalSpider.spiderName,
+                    action = NotificationHelper.SpiderAction.UPDATE,
+                    spiderId = spiderId,
+                    token = token
                 )
 
                 _updateSpiderResult.value = Result.success(updatedSpider)
                 refreshSpiders(token)
+                dialog?.dismiss()
             } catch (e: Exception) {
                 _updateSpiderResult.value = Result.failure(e)
             }
@@ -234,5 +388,55 @@ class InventoryViewModel : ViewModel() {
 
     fun clearUpdateSpiderResult() {
         _updateSpiderResult.value = null
+    }
+
+    fun toggleFavorite(
+        token: String, 
+        spiderId: String, 
+        isFavorite: Int, 
+        spider: Spider, 
+        context: Context,
+        showNotification: Boolean = true  // Add parameter to control notification
+    ) {
+        viewModelScope.launch {
+            try {
+                val newFavoriteStatus = if (isFavorite == 0) 1 else 0
+                
+                val method = RequestBody.create("text/plain".toMediaTypeOrNull(), "PATCH")
+                val favoriteBody = RequestBody.create("text/plain".toMediaTypeOrNull(), newFavoriteStatus.toString())
+
+                val updatedSpider = apiService.updateSpider(
+                    token,
+                    spiderId,
+                    method,
+                    spiderIsFavorite = favoriteBody,
+                    spiderName = null,
+                    spiderHealthStatus = null,
+                    spiderSize = null,
+                    spiderEstimatedMarketValue = null,
+                    spiderDescription = null,
+                    spiderImageRef = null
+                )
+
+                // Only show notification if showNotification is true
+                if (showNotification) {
+                    NotificationHelper(context).showSpiderNotification(
+                        spiderName = spider.spiderName,
+                        action = NotificationHelper.SpiderAction.UPDATE,
+                        spiderId = spiderId,
+                        token = token
+                    )
+                }
+
+                _favoriteToggleResult.value = Result.success(updatedSpider)
+                refreshSpiders(token)
+            } catch (e: Exception) {
+                _favoriteToggleResult.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun clearFavoriteToggleResult() {
+        _favoriteToggleResult.value = null
     }
 }

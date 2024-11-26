@@ -13,15 +13,7 @@ data class Spider(
     val spiderEstimatedMarketValue: Double,
     val spiderDescription: String,
     val spiderImageRef: String,
+    val spiderIsFavorite: Int = 0,
     val created_at: String,
     val updated_at: String
 ) : Parcelable
-
-data class SpiderRequest(
-    val spiderName: String,
-    val spiderHealthStatus: String,
-    val spiderSize: String,
-    val spiderEstimatedMarketValue: Double,
-    val spiderDescription: String,
-    val spiderImageRef: okhttp3.MultipartBody.Part
-)
