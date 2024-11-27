@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/spider_first_bg"
+    tools:context=".view.LandingPage.LandingPage">
+
+
+    <Button
+        android:id="@+id/land_startBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/RedButtonStyle"
+        android:background="@drawable/spider_button_bg"
+        android:layout_marginHorizontal="@dimen/_30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_50dp"
+        android:textSize="@dimen/_13sp"
+        android:fontFamily="@font/medium"
+        android:text="@string/get_started_text"/>
+
+</RelativeLayout>

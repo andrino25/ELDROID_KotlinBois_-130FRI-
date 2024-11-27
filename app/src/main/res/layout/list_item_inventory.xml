@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="@dimen/_170dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4dp"
+        android:layout_marginEnd="@dimen/_4dp"
+        android:layout_marginBottom="@dimen/_4dp"
+        android:layout_marginStart="@dimen/_4dp"
+        android:paddingBottom="@dimen/_8dp"
+        android:background="@drawable/bg_spider_item_home">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/i_spider_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_70dp"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_10dp"
+            android:layout_marginEnd="@dimen/_10dp"
+            app:shapeAppearanceOverlay="@style/SemiCircularImageViewStyle"
+            android:layout_marginBottom="@dimen/_10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_spider_placeholder" />
+
+        <TextView
+            android:id="@+id/i_spider_breed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/i_spider_image"
+            android:fontFamily="@font/medium"
+            android:text="@string/spider_name"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="@dimen/_14sp"
+            android:layout_marginStart="@dimen/_10dp"/>
+
+
+        <TextView
+            android:id="@+id/i_spider_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/i_spider_breed"
+            android:layout_marginStart="@dimen/_10dp"
+            android:layout_marginTop="@dimen/_n4dp"
+            android:text="@string/sample_text"
+            android:textColor="@color/green"
+            android:textSize="@dimen/_13sp"
+            />
+
+        <ImageButton
+            android:id="@+id/starBtn"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="@dimen/_15dp"
+            android:layout_marginEnd="@dimen/_15dp"
+            android:layout_marginBottom="@dimen/_15dp"
+            android:layout_below="@+id/i_spider_image"
+            android:background="@color/transparent"
+            android:fontFamily="@font/standard"
+            android:onClick="onToggleStar"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_star_on" />
+    </RelativeLayout>
+</RelativeLayout>

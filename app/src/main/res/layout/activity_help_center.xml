@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:id="@+id/headerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/maroon"
+            android:paddingTop="@dimen/_16dp"
+            android:paddingBottom="@dimen/_10dp"
+            android:paddingRight="@dimen/_16dp"
+            android:paddingLeft="@dimen/_16dp">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="@dimen/_22dp"
+                android:layout_height="@dimen/_22dp"
+                android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/medium"
+                android:text="@string/help_center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_22sp" />
+        </RelativeLayout>
+
+        <!-- Content -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/headerContainer">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/_16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/faqs"
+                    android:textColor="@color/maroon"
+                    android:textSize="@dimen/_22sp" />
+
+                <!-- FAQ Items -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_8dp"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/faq_add_spider"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/standard"
+                    android:textSize="@dimen/_13sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/faq_add_spider_answer" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16dp"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/faq_edit_spider"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/standard"
+                    android:textSize="@dimen/_13sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/faq_edit_spider_answer" />
+
+                <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_16dp"
+                android:fontFamily="@font/medium"
+                android:text="@string/faq_search_spider"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/standard"
+                    android:textSize="@dimen/_13sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/faq_search_spider_answer" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_16dp"
+                    android:fontFamily="@font/medium"
+                    android:text="@string/faq_delete_spider"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_16sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/standard"
+                    android:textSize="@dimen/_13sp"
+                    android:justificationMode="inter_word"
+                    android:text="@string/faq_delete_spider_answer" />
+                <!-- More FAQ items... -->
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+</FrameLayout>

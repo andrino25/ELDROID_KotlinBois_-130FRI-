@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">Gagambrawl</string>
+    <string name="get_started_text">GET STARTED</string>
+    <string name="email_txt">Email</string>
+    <string name="forgot_password_txt">Forgot Password?</string>
+    <string name="don_t_have_an_account_yet_sign_in">Don’t have an account yet? Sign up</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_and_account_sign_in">Already have and account? Sign in</string>
+    <string name="login">LOGIN</string>
+    <string name="register">register</string>
+    <string name="forgot_your_password">Forgot your Password?</string>
+    <string name="submit">Submit</string>
+    <string name="home">Home</string>
+    <string name="catalog">Catalog</string>
+    <string name="inventory">Inventory</string>
+    <string name="profile">Profile</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="show_all">Show all</string>
+    <string name="sample_text">Sample Text</string>
+    <string name="add_new_spider"><![CDATA[Add New Spider?]]></string>
+    <string name="name">Name</string>
+    <string name="size">Size</string>
+    <string name="more_details">More Details</string>
+    <string name="add">Add</string>
+    <string name="are_you_leaving">Are you leaving?</string>
+    <string name="are_you_sure_you_want_to_logout">Are you sure you want to logout?</string>
+    <string name="logout">Logout</string>
+
+    <!-- Help Center Headers -->
+    <string name="help_center">Help Center</string>
+    <string name="faqs">FAQs</string>
+    <string name="feedback">Feedback</string>
+
+    <!-- FAQ Questions -->
+    <string name="faq_add_spider">How do I add a new spider to the inventory?</string>
+    <string name="faq_edit_spider">Can I edit the information of a spider after adding it to the inventory?</string>
+    <string name="faq_search_spider">How can I search for a specific spider in the catalog?</string>
+    <string name="faq_delete_spider">What should I do if I accidentally delete a spider from the inventory?</string>
+
+    <!-- FAQ Answers -->
+    <string name="faq_add_spider_answer">To add a new spider, navigate to the \'Add Spider\' section from the main menu. Fill in the spider\'s details, such as species, color, origin, and characteristics, then tap \'Save\' to add it to the inventory.</string>
+    <string name="faq_edit_spider_answer">Yes, you can edit spider details. Go to the \'Spider Catalog,\' select the spider you want to update, and tap the \'Edit\' button. Make the necessary changes and save them.</string>
+    <string name="faq_search_spider_answer">Use the search bar at the top of the \'Spider Catalog\' page to search by species name, color, origin, or other characteristics. You can also use filters to narrow down the results.</string>
+    <string name="faq_delete_spider_answer">Once a spider is deleted, it cannot be recovered. Make sure to confirm your decision when deleting any entry. We recommend double-checking before removing any entry.</string>
+
+    <!-- Feedback Section -->
+    <string name="feedback_hint">Write feedback…</string>
+    <string name="send_feedback">Send Feedback</string>
+    <string name="spiderDetails">Spider Details</string>
+    <string name="quantity">Quantity</string>
+    <string name="lunhaw">Lunhaw</string>
+    <string name="favorite_icon">Favorite Icon</string>
+    <string name="size_super_jumbo">Size: Super Jumbo</string>
+    <string name="status_active">Status: Active</string>
+    <string name="description">Description:</string>
+    <string name="lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_morbi_non_diam_sit_amet_odio_viverra_aliquet">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi non diam sit amet odio viverra aliquet.</string>
+    <string name="edit_details">Edit Details</string>
+    <string name="delete_details">Delete Details</string>
+    <string name="john_doe">John Doe</string>
+    <string name="johndoe_gmail_com">johndoe@gmail.com</string>
+    <string name="my_profile">My Profile</string>
+    <string name="goliath_birdeater">Goliath BirdEater</string>
+    <string name="one_of_the_largest_spider_species_in_the_world_known_for_its_impressive_size_and">One of the largest spider species in the world, known for its impressive size and</string>
+    <string name="active">Active</string>
+    <string name="add_image">Add Image</string>
+    <string name="loading">Loading...</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="first_name">First Name</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="address">Address</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="confirm_action">Confirm Action\n</string>
+    <string name="do_you_want_to_delete_this_spider">Do you want to delete this spider?</string>
+    <string name="delete">Delete</string>
+    <string name="edit_your_spider">Edit your Spider</string>
+    <string name="save">Save</string>
+    <string name="delete_this_spider">Delete this spider?</string>
+    <string name="are_you_sure_you_want_to_delete_this_spider">Are you sure you want to delete this spider?</string>
+
+    <!-- Error Messages -->
+    <string name="error_all_fields_required">All fields are required</string>
+    <string name="error_invalid_market_value">Please enter a valid market value</string>
+    <string name="error_image_required">Please select an image</string>
+    <string name="error_failed_to_add_spider">Failed to add spider: %1$s</string>
+    <string name="error_image_is_required">Image is required</string>
+    <string name="error_loading_catalogs">Failed to load catalogs: %1$s</string>
+    <string name="error_parsing_catalogs">Error parsing catalogs</string>
+    <string name="log_parsing_json">Parsing JSON object: %1$s</string>
+
+    <!-- Success Messages -->
+    <string name="success_spider_added">Spider added successfully</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_select_picture">Select Picture</string>
+
+    <!-- Content Type -->
+    <string name="content_type_image">image/*</string>
+    <string name="content_type_text">text/plain</string>
+
+    <!-- API Parameters -->
+    <string name="param_spider_image_ref">spiderImageRef</string>
+    <string name="param_bearer">Bearer %1$s</string>
+
+    <string name="featured_catalogs">Featured Catalogs</string>
+    <string name="your_spiders">Your Spiders</string>
+    <string name="edit_spider">Edit Spider</string>
+    <string name="edit_image">Edit Image</string>
+    <string name="edit">Edit</string>
+    <string name="see_more">See more</string>
+    <string name="inventory_is_empty_for_now">Inventory is empty for now.</string>
+    <string name="spider_name">Spider Name</string>
+
+    <!-- Spider Health Status Options -->
+    <string-array name="health_status_array">
+        <item>Healthy</item>
+        <item>Injured</item>
+        <item>Unavailable</item>
+    </string-array>
+
+    <!-- Spider Size Options -->
+    <string-array name="size_array">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Gagambrawl" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="RedButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/maroon</item>  <!-- Green color -->
+    </style>
+
+    <style name="WhiteButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/white</item>  <!-- Green color -->
+    </style>
+
+    <style name="Theme.Gagambrawl" parent="Base.Theme.Gagambrawl" />
+</resources>
