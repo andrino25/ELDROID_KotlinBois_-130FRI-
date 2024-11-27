@@ -28,7 +28,7 @@
             android:layout_below="@id/spider_image"
             android:text="@string/goliath_birdeater"
             android:fontFamily="@font/medium"
-            android:textSize="@dimen/_16sp"
+            android:textSize="@dimen/_18sp"
             android:textColor="@color/white"/>
 
         <TextView

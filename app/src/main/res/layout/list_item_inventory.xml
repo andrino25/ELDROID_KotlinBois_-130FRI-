@@ -48,7 +48,7 @@
             android:layout_marginTop="@dimen/_n4dp"
             android:text="@string/sample_text"
             android:textColor="@color/green"
-            android:textSize="@dimen/_13sp"
+            android:textSize="@dimen/_14sp"
             />
 
         <ImageButton
